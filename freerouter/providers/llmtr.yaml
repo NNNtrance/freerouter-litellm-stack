@@ -7,7 +7,7 @@ region: tr
 # PAID aggregator (347 models, bills per token on LLMTR_API_KEY). Only the zero-priced
 # catalog entries are routed, and priced_catalog re-reads the price every cycle, so a
 # model that gets repriced leaves the pool within one refresh instead of billing.
-credential: <REDACTED_API_KEY>
+credential: LLMTR_API_KEY
 litellm_prefix: openai
 api_base: https://llmtr.com/v1
 docs_url: https://llmtr.com
@@ -24,7 +24,7 @@ limits:
 discovery:
   mode: priced_catalog
   url: https://llmtr.com/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   prompt_price_path: pricing.prompt

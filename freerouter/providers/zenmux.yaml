@@ -4,7 +4,7 @@ name_zh: ZenMux
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: ZENMUX_API_KEY
 litellm_prefix: openai
 api_base: https://zenmux.ai/api/v1
 docs_url: https://zenmux.ai/docs
@@ -21,7 +21,7 @@ limits:
 discovery:
   mode: priced_catalog
   url: https://zenmux.ai/api/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: none
   items_path: data
   id_path: id
   prompt_price_path: pricings.prompt

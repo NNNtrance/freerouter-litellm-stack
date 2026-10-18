@@ -4,7 +4,7 @@ name_zh: 魔搭社区 ModelScope
 status: active
 tier: free
 region: cn
-credential: <REDACTED_API_KEY>
+credential: MODELSCOPE_API_KEY
 litellm_prefix: modelscope
 docs_url: https://modelscope.cn/docs/model-service/API-Inference/intro
 console_url: https://modelscope.cn/my/myaccesstoken
@@ -36,7 +36,7 @@ limits:
 discovery:
   mode: listing
   url: https://api-inference.modelscope.cn/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: none
   items_path: data
   whole_catalog_is_free: true
   id_path: id

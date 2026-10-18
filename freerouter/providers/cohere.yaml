@@ -4,7 +4,7 @@ name_zh: Cohere
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: COHERE_API_KEY
 litellm_prefix: cohere_chat
 docs_url: https://docs.cohere.com/docs/rate-limits
 console_url: https://dashboard.cohere.com/api-keys
@@ -19,7 +19,7 @@ limits:
 discovery:
   mode: listing
   url: https://api.cohere.com/v1/models?endpoint=chat&page_size=200
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: models
   whole_catalog_is_free: true
   id_path: name

@@ -4,7 +4,7 @@ name_zh: 火山引擎 (豆包)
 status: active
 tier: trial
 region: cn
-credential: <REDACTED_API_KEY>
+credential: VOLCENGINE_API_KEY
 litellm_prefix: volcengine
 docs_url: https://www.volcengine.com/docs/82379
 console_url: https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey

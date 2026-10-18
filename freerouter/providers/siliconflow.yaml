@@ -4,7 +4,7 @@ name_zh: 硅基流动 SiliconFlow
 status: active
 tier: free
 region: cn
-credential: <REDACTED_API_KEY>
+credential: SILICONFLOW_API_KEY
 litellm_prefix: openai
 api_base: https://api.siliconflow.cn/v1
 docs_url: https://docs.siliconflow.cn/cn/userguide/quickstart
@@ -21,7 +21,7 @@ limits:
 discovery:
   mode: listing
   url: https://api.siliconflow.cn/v1/models?sub_type=chat
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   allow:

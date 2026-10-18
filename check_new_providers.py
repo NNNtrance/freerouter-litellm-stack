@@ -52,11 +52,11 @@ PROVIDERS_DIR = ROOT / "freerouter" / "providers"
 HEALTH_PATH = ROOT / "freerouter" / "state" / "health.json"
 GATEWAY_URL = "http://localhost:4000"
 
-WEBHOOK_URL = <REDACTED_API_KEY>"N8N_NOTIFY_WEBHOOK_URL", "")
+WEBHOOK_URL = os.environ.get("N8N_NOTIFY_WEBHOOK_URL", "")
 HEADERS = {"User-Agent": "litellm-proxy/provider-watch"}
 
 # FreeRouter expects these names, but .env stores the upstream ones. docker-compose.yml
-# bridges them (ZHIPU_API_KEY=<REDACTED_API_KEY>, HUGGINGFACE_API_KEY=<REDACTED_API_KEY>, so a
+# bridges them (ZHIPU_API_KEY=${ZAI_API_KEY}, HUGGINGFACE_API_KEY=${HF_TOKEN}), so a
 # report keyed on the FreeRouter name has to look the .env name up.
 DOTENV_ALIASES = {
     "ZHIPU_API_KEY": "ZAI_API_KEY",
@@ -78,7 +78,7 @@ ROUTABLE_STATUSES = {"active"}
 #     first run of this report.
 # Wrapping identifiers in backticks makes them code spans, which Markdown
 # leaves alone: underscores survive *and* the emphasis stays balanced.
-_MD_TOKEN = <REDACTED_API_KEY>"(?<![`\w])[A-Za-z0-9_]*_[A-Za-z0-9_]*(?![`\w])")
+_MD_TOKEN = re.compile(r"(?<![`\w])[A-Za-z0-9_]*_[A-Za-z0-9_]*(?![`\w])")
 
 
 def env_label(var):
@@ -257,11 +257,11 @@ def probe(provider, env):
     if url is None:
         return "missing", None
 
-    auth = <REDACTED_API_KEY>"auth"]
-    if auth =<REDACTED_API_KEY> "none" or not key:
+    auth = provider["auth"]
+    if auth == "none" or not key:
         # Open catalog: reachable says nothing about whether our key works.
         return _get(url, None, None), "public"
-    if auth =<REDACTED_API_KEY> "query_key":
+    if auth == "query_key":
         sep = "&" if "?" in url else "?"
         return _get(f"{url}{sep}key={urllib.parse.quote(key)}", None, None), None
     return _get(url, f"Bearer {key}", None), None
@@ -270,7 +270,7 @@ def probe(provider, env):
 def _get(url, authorization, extra, timeout=15):
     headers = dict(HEADERS)
     if authorization:
-        <REDACTED_API_KEY>"Authorization"] = authorization
+        headers["Authorization"] = authorization
     if extra:
         headers.update(extra)
     try:
@@ -365,7 +365,7 @@ def notify(text):
     # into the proven Parrot webhook (do NOT point this at a hand-built workflow —
     # n8n 2.x kept executing a stale definition when we tried).
     if not WEBHOOK_URL:
-        <REDACTED_API_KEY>"N8N_NOTIFY_WEBHOOK_URL not set — cannot notify.")
+        log.error("N8N_NOTIFY_WEBHOOK_URL not set — cannot notify.")
         return False
     url = f"{WEBHOOK_URL}?message={urllib.parse.quote(text)}"
     req = urllib.request.Request(url, data=b"", headers=HEADERS, method="POST")

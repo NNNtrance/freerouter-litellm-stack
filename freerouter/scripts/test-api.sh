@@ -10,7 +10,7 @@ HEADERS=$(mktemp)
 
 curl -fsS --max-time 180 \
   "http://127.0.0.1:$PORT/v1/chat/completions" \
-  -H "Authorization: <REDACTED_API_KEY> <REDACTED_BEARER_TOKEN>" \
+  -H "Authorization: Bearer $MASTER_KEY" \
   -H "Content-Type: application/json" \
   -D "$HEADERS" \
   -d "{\"model\":\"$MODEL\",\"messages\":[{\"role\":\"user\",\"content\":\"Reply with exactly OK\"}],\"max_tokens\":256}" \

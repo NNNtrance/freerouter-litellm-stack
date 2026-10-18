@@ -4,7 +4,7 @@ name_zh: Google AI Studio (Gemini)
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: GEMINI_API_KEY
 litellm_prefix: gemini
 docs_url: https://ai.google.dev/gemini-api/docs/rate-limits
 console_url: https://aistudio.google.com/apikey
@@ -19,7 +19,7 @@ limits:
 discovery:
   mode: listing
   url: https://generativelanguage.googleapis.com/v1beta/models
-  auth: <REDACTED_API_KEY>
+  auth: query_key
   items_path: models
   id_path: name
   id_strip_prefix: "models/"

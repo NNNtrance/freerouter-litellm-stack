@@ -4,7 +4,7 @@ name_zh: Ollama Cloud
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: OLLAMA_API_KEY
 litellm_prefix: openai
 api_base: https://ollama.com/v1
 docs_url: https://docs.ollama.com/cloud
@@ -21,7 +21,7 @@ limits:
 discovery:
   mode: listing
   url: https://ollama.com/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   # 不用 whole_catalog_is_free：Ollama 也在卖付费的云端模型，目录会变。

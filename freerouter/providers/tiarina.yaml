@@ -12,7 +12,7 @@ name_zh: Tiarina Cloud AI 网关
 status: paused
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: TIARINA_API_KEY
 litellm_prefix: openai
 api_base: https://ai.tiarina.cloud/v1
 docs_url: https://tiarina.cloud/features
@@ -27,7 +27,7 @@ discovery:
   # /v1/models 返回 16 条（含付费模型），只有 3 个 :free 是免费的，所以逐条写死
   mode: listing
   url: https://ai.tiarina.cloud/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   allow:

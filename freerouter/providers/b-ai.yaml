@@ -4,7 +4,7 @@ name_zh: B.AI
 status: active
 tier: offer
 region: global
-credential: <REDACTED_API_KEY>
+credential: B_AI_API_KEY
 litellm_prefix: openai
 api_base: https://api.b.ai/v1
 docs_url: https://docs.b.ai
@@ -24,7 +24,7 @@ offer:
 discovery:
   mode: listing
   url: https://api.b.ai/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   allow:

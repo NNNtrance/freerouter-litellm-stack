@@ -79,4 +79,4 @@ general_settings:
   # FreeRouter alike). .env already sets STORE_MODEL_IN_DB=True.
   store_model_in_db: true
   ui_username: admin
-  ui_password: <REDACTED_API_KEY>
+  # ui_password comes from .env UI_PASSWORD (never commit it here).

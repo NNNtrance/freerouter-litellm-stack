@@ -6,9 +6,9 @@ tier: free
 region: global
 # LLM7 serves its free ("turbo") tier anonymously; an empty token works. FreeRouter
 # skips a provider whose credential env var is empty, so compose passes a
-# placeholder (LLM7_API_KEY=<REDACTED_API_KEY> unless a real dash.llm7.io
+# placeholder (LLM7_API_KEY=unused) unless a real dash.llm7.io
 # token is set, which only raises the rate limits.
-credential: <REDACTED_API_KEY>
+credential: LLM7_API_KEY
 litellm_prefix: openai
 api_base: https://api.llm7.io/v1
 docs_url: https://docs.llm7.io
@@ -27,7 +27,7 @@ limits:
 discovery:
   mode: listing
   url: https://api.llm7.io/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: none
   items_path: data
   id_path: id
   require:

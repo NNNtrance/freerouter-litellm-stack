@@ -34,7 +34,7 @@ def test_healthy_models_get_the_pool_the_canonical_and_the_direct_alias() -> Non
     }
     assert all(entry.litellm_model == "openai/alpha" for entry in plan)
     assert all(entry.api_base == "https://demo.example/v1" for entry in plan)
-    assert all(entry.api_key_env =<REDACTED_API_KEY> "DEMO_API_KEY" for entry in plan)
+    assert all(entry.api_key_env == "DEMO_API_KEY" for entry in plan)
 
 
 def test_unverified_and_quarantined_models_stay_out_of_the_shared_pool() -> None:
@@ -57,7 +57,7 @@ def test_a_provider_missing_a_templated_variable_plans_nothing() -> None:
     # Given
     provider = make_provider(
         api_base="https://demo.example/${DEMO_ACCOUNT_ID}/v1",
-        extra_credentials=<REDACTED_API_KEY>"DEMO_ACCOUNT_ID"],
+        extra_credentials=["DEMO_ACCOUNT_ID"],
     )
     state = make_state(make_health(status=HealthStatus.HEALTHY))
 

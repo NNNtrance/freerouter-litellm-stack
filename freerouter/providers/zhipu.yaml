@@ -4,7 +4,7 @@ name_zh: 智谱 AI (BigModel)
 status: active
 tier: free
 region: cn
-credential: <REDACTED_API_KEY>
+credential: ZHIPU_API_KEY
 litellm_prefix: openai
 api_base: https://open.bigmodel.cn/api/paas/v4
 docs_url: https://docs.bigmodel.cn/cn/guide/start/model-overview

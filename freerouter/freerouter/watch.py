@@ -118,7 +118,7 @@ def build_snapshot(
                 }
             )
             continue
-        result = discover(provider, source, require_credentials=<REDACTED_API_KEY>
+        result = discover(provider, source, require_credentials=False)
         entries[provider.provider_id] = base.model_copy(
             update={"models": result.models, "note": result.error or result.skipped}
         )

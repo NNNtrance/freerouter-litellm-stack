@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from freerouter.transport import JsonValue, Response
 
 READY_POLL_SECONDS: Final = 3.0
-TOOL_PROBE_MAX_TOKENS: <REDACTED_API_KEY> = 1024
+TOOL_PROBE_MAX_TOKENS: Final = 1024
 """Room for a reasoning model to think before it emits the call; 16 tokens (the old
 plain-chat probe) would read every reasoning model as unable to call tools."""
 TOOL_PROBE_PROMPT: Final = "What is the weather in Paris right now? Use the get_weather tool."
@@ -112,7 +112,7 @@ class Gateway:
         payload = response.json()
         return as_items(payload) or as_items(dig(payload, "data"))
 
-    def chat(self, alias: str, prompt: str, max_tokens: <REDACTED_API_KEY> -> Response:
+    def chat(self, alias: str, prompt: str, max_tokens: int) -> Response:
         """Send one minimal completion through the proxy, exactly as real traffic would.
 
         The request carries the probe tag so operators reading the call log can tell

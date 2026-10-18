@@ -4,7 +4,7 @@ name_zh: OpenRouter
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: OPENROUTER_API_KEY
 litellm_prefix: openrouter
 docs_url: https://openrouter.ai/docs
 console_url: https://openrouter.ai/settings/keys
@@ -22,7 +22,7 @@ limits:
 discovery:
   mode: priced_catalog
   url: https://openrouter.ai/api/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: none
   items_path: data
   id_path: id
   prompt_price_path: pricing.prompt

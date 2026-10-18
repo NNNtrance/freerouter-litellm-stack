@@ -67,7 +67,7 @@ def test_expand_env_returns_none_when_a_variable_is_missing() -> None:
 
 def test_credentials_require_every_declared_variable() -> None:
     # Given
-    provider = make_provider(extra_credentials=<REDACTED_API_KEY>"DEMO_ACCOUNT_ID"])
+    provider = make_provider(extra_credentials=["DEMO_ACCOUNT_ID"])
 
     # When / Then
     assert credentials_for(provider, {"DEMO_API_KEY": "k"}) == {}

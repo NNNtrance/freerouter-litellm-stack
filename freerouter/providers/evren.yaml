@@ -4,7 +4,7 @@ name_zh: EVREN LLM API
 status: active
 tier: offer
 region: tr
-credential: <REDACTED_API_KEY>
+credential: EVREN_API_KEY
 litellm_prefix: openai
 api_base: https://evren-llmapi.ssyz.org.tr/v1
 docs_url: https://evren-llmapi.ssyz.org.tr/v1/models
@@ -24,7 +24,7 @@ limits:
 discovery:
   mode: listing
   url: https://evren-llmapi.ssyz.org.tr/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   # 不用 whole_catalog_is_free：目录里的 13 个模型分属不同任务，embedding /
@@ -46,7 +46,7 @@ discovery:
     - "*asr*"
     - "*guard*"
     - "auto"
-# 2026-09-27 移除了 provider 级 `extra_params.max_tokens: <REDACTED_API_KEY>
+# 2026-09-27 移除了 provider 级 `extra_params.max_tokens`（原值
 # 4096）。原因：那只是「客户端没传 max_tokens 时」的默认值，而客户端自己传的值一直
 # 优先级更高、照常生效——所以 opencode / hermes 这类显式传 max_tokens 的客户端根本
 # 没被它限制过，去掉不影响它们的实际输出上限。

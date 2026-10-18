@@ -4,7 +4,7 @@ name_zh: Kilo Gateway
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: KILO_API_KEY
 litellm_prefix: openai
 api_base: https://api.kilo.ai/api/gateway
 docs_url: https://kilo.ai/gateway
@@ -21,7 +21,7 @@ discovery:
   mode: listing
   # /models 同时返回付费模型（claude/gpt 等数百条），所以只放行 :free 后缀与官方免费路由别名
   url: https://api.kilo.ai/api/gateway/models
-  auth: <REDACTED_API_KEY>
+  auth: none
   items_path: data
   id_path: id
   allow:

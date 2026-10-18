@@ -58,7 +58,7 @@ class Limits(BaseModel):
     # Per-request ceilings the platform enforces regardless of the model card: a
     # provider-wide input cap, or a tokens-per-minute limit low enough that one
     # large prompt is rejected outright (groq's free tier answers 413).
-    max_input_tokens: <REDACTED_API_KEY> | None = None
+    max_input_tokens: int | None = None
     tpm: int | None = None
     note: str | None = None
 
@@ -76,7 +76,7 @@ class Discovery(BaseModel):
 
     mode: DiscoveryMode
     url: str | None = None
-    auth: <REDACTED_API_KEY> = AuthMode.NONE
+    auth: AuthMode = AuthMode.NONE
     items_path: str = "data"
     id_path: str = "id"
     id_strip_prefix: str | None = None
@@ -112,7 +112,7 @@ class ProbeSettings(BaseModel):
 
     enabled: bool = True
     max_per_cycle: int = 6
-    max_tokens: <REDACTED_API_KEY> = 16
+    max_tokens: int = 16
     prompt: str = "ping"
 
 
@@ -129,8 +129,8 @@ class Provider(BaseModel):
     status: ProviderStatus = ProviderStatus.ACTIVE
     tier: Tier = Tier.FREE
     region: str = "global"
-    credential: <REDACTED_API_KEY> | None = None
-    extra_credentials: <REDACTED_API_KEY>, ...] = ()
+    credential: str | None = None
+    extra_credentials: tuple[str, ...] = ()
     litellm_prefix: str
     api_base: str | None = None
     docs_url: str
