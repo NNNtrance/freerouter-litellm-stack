@@ -83,7 +83,7 @@ def test_env_example_tells_the_reader_where_each_key_comes_from() -> None:
 
 def test_env_example_includes_every_extra_credential() -> None:
     # Given
-    provider = make_provider(extra_credentials=<REDACTED_API_KEY>"DEMO_ACCOUNT_ID"])
+    provider = make_provider(extra_credentials=["DEMO_ACCOUNT_ID"])
 
     # When
     block = render_env_keys([provider])
@@ -162,7 +162,7 @@ def test_every_routable_platform_offers_a_way_to_get_a_key() -> None:
     # Then
     for provider in providers:
         if provider.routable and provider.credential:
-            <REDACTED_API_KEY> = f"{provider.provider_id} 缺少 console_url，读者不知道去哪注册"
+            reason = f"{provider.provider_id} 缺少 console_url，读者不知道去哪注册"
             assert signup_url(provider), reason
 
 

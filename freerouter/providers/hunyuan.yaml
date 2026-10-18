@@ -4,7 +4,7 @@ name_zh: 腾讯混元
 status: active
 tier: trial
 region: cn
-credential: <REDACTED_API_KEY>
+credential: HUNYUAN_API_KEY
 litellm_prefix: openai
 api_base: https://api.hunyuan.cloud.tencent.com/v1
 docs_url: https://cloud.tencent.com/document/product/1729

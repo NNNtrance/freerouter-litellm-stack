@@ -51,8 +51,8 @@ name_zh: 新平台
 status: active            # active | paused | retired | watch
 tier: free                # free | trial | offer
 region: cn                # cn | global
-credential: <REDACTED_API_KEY>
-extra_credentials: <REDACTED_API_KEY>     # e.g. an account id required by the catalog URL
+credential: NEWPLATFORM_API_KEY
+extra_credentials: []     # e.g. an account id required by the catalog URL
 litellm_prefix: openai    # a native LiteLLM provider prefix, or openai + api_base
 api_base: https://api.newplatform.com/v1
 docs_url: https://docs.newplatform.com
@@ -65,7 +65,7 @@ limits:
 discovery:
   mode: listing           # priced_catalog | listing | static
   url: https://api.newplatform.com/v1/models
-  auth: <REDACTED_API_KEY>            # none | bearer | query_key
+  auth: bearer            # none | bearer | query_key
   items_path: data
   id_path: id
   allow: []
@@ -106,7 +106,7 @@ model_list:
     litellm_params:
       model: openai/provider/model-id
       api_base: https://provider.example/v1
-      api_key: <REDACTED_API_KEY>
+      api_key: os.environ/MY_PROVIDER_API_KEY
 ```
 
 Restart after editing:

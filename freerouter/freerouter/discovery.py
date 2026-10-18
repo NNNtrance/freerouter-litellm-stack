@@ -145,8 +145,8 @@ def _model_ids(payload: JsonValue, discovery: Discovery) -> tuple[tuple[str, int
 
 def _catalog_request(
     discovery: Discovery,
-    secrets: <REDACTED_API_KEY>, str],
-    credential: <REDACTED_API_KEY> | None,
+    secrets: Mapping[str, str],
+    credential: str | None,
 ) -> tuple[str, dict[str, str]] | None:
     """Build the catalog URL and headers, or None when the URL cannot be resolved."""
     if discovery.url is None:
@@ -166,9 +166,9 @@ def _catalog_request(
 
 def _skip_reason(
     provider: Provider,
-    secrets: <REDACTED_API_KEY>, str],
+    secrets: Mapping[str, str],
     *,
-    require_credentials: <REDACTED_API_KEY>,
+    require_credentials: bool,
 ) -> str | None:
     """Return why the provider must be skipped this cycle, or None to proceed."""
     if provider.status is ProviderStatus.RETIRED:
@@ -176,7 +176,7 @@ def _skip_reason(
     if not provider.routable:
         return provider.status.value
     if require_credentials and provider.credential and not secrets:
-        <REDACTED_API_KEY> "missing " + ", ".join([provider.credential, *provider.extra_credentials])
+        return "missing " + ", ".join([provider.credential, *provider.extra_credentials])
     return None
 
 
@@ -226,7 +226,7 @@ def _discover_static(provider: Provider) -> DiscoveryResult:
     return _finish(provider, tuple((model_id, None) for model_id in provider.discovery.models))
 
 
-def _discover_catalog(provider: Provider, secrets: <REDACTED_API_KEY>, str]) -> DiscoveryResult:
+def _discover_catalog(provider: Provider, secrets: Mapping[str, str]) -> DiscoveryResult:
     """Resolve the model list from the platform's live catalog endpoint."""
     resolved = _catalog_request(provider.discovery, secrets, provider.credential)
     if resolved is None:
@@ -258,11 +258,11 @@ def discover(
     provider: Provider,
     env: Mapping[str, str] | None = None,
     *,
-    require_credentials: <REDACTED_API_KEY> = True,
+    require_credentials: bool = True,
 ) -> DiscoveryResult:
     """Resolve the current free-model list for one provider."""
-    secrets = <REDACTED_API_KEY>, env)
-    reason = _skip_reason(provider, secrets, require_credentials=<REDACTED_API_KEY>
+    secrets = credentials_for(provider, env)
+    reason = _skip_reason(provider, secrets, require_credentials=require_credentials)
     if reason is not None:
         return DiscoveryResult(provider_id=provider.provider_id, skipped=reason)
     if provider.discovery.mode is DiscoveryMode.STATIC:

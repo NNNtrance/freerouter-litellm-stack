@@ -4,7 +4,7 @@ name_zh: Hugging Face 推理
 status: paused
 tier: trial
 region: global
-credential: <REDACTED_API_KEY>
+credential: HUGGINGFACE_API_KEY
 litellm_prefix: huggingface
 docs_url: https://huggingface.co/docs/inference-providers/en/pricing
 console_url: https://huggingface.co/settings/tokens

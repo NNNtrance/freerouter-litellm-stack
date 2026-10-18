@@ -4,7 +4,7 @@ name_zh: SambaNova Cloud
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: SAMBANOVA_API_KEY
 litellm_prefix: openai
 api_base: https://api.sambanova.ai/v1
 docs_url: https://docs.sambanova.ai/docs/en/get-started/overview
@@ -21,7 +21,7 @@ discovery:
   # 否则会把付费条目一并注册进池子。
   mode: listing
   url: https://api.sambanova.ai/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: none
   items_path: data
   id_path: id
   allow:

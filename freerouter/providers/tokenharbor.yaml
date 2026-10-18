@@ -4,7 +4,7 @@ name_zh: Token Harbor 聚合网关
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: TOKENHARBOR_API_KEY
 litellm_prefix: openai
 api_base: https://tokenharbor.ai/v1
 docs_url: https://tokenharbor.ai/docs/getting-started/quickstart
@@ -20,7 +20,7 @@ discovery:
   # /v1/models 返回 64 条（Claude/GPT/Grok/GLM 等付费模型混在一起），只有 4 个 :free 是零余额可用的
   mode: listing
   url: https://tokenharbor.ai/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   allow:

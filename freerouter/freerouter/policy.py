@@ -67,7 +67,7 @@ translation-only, OCR, image generation, and the explicitly tiny families whose 
 carries no parameter count (``granite-…-micro``, ``tiny-aya``, ``command-r7b``)."""
 
 _SIZE: Final = re.compile(r"(?<![a-z0-9.])e?(\d+(?:\.\d+)?)b(?![a-z0-9])")
-"""A parameter-count token: <REDACTED_API_KEY>, ``:20b``, ``-0.3b``, ``-e4b``. The look-behind
+"""A parameter-count token: ``-70b``, ``:20b``, ``-0.3b``, ``-e4b``. The look-behind
 rejects MoE active-parameter tokens (``a3b``, ``a12b``) and version digits."""
 
 

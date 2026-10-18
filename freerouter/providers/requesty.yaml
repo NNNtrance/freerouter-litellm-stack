@@ -4,7 +4,7 @@ name_zh: Requesty 聚合网关
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: REQUESTY_API_KEY
 litellm_prefix: openai
 api_base: https://router.requesty.ai/v1
 docs_url: https://docs.requesty.ai/quickstart
@@ -20,7 +20,7 @@ discovery:
   # 754 条目录里只有 13 条零价（input_price=output_price=0）；零价即免费，所以用 priced_catalog 动态跟随
   mode: priced_catalog
   url: https://router.requesty.ai/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   prompt_price_path: input_price

@@ -29,7 +29,7 @@ Read the master key locally without printing it:
 ```bash
 MASTER_KEY=$(sed -n 's/^LITELLM_MASTER_KEY=//p' .env)
 curl http://127.0.0.1:4000/v1/chat/completions \
-  -H "Authorization: <REDACTED_API_KEY> <REDACTED_BEARER_TOKEN>" \
+  -H "Authorization: Bearer $MASTER_KEY" \
   -H 'Content-Type: application/json' \
   -d '{"model":"free-router","messages":[{"role":"user","content":"Reply with OK"}],"max_tokens":256}'
 ```

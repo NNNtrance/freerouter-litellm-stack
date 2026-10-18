@@ -4,7 +4,7 @@ name_zh: Clean APIs 聚合网关
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: CLEANAPIS_API_KEY
 litellm_prefix: openai
 api_base: https://cleanapis.com/v1
 docs_url: https://cleanapis.com/docs/getting-started
@@ -20,7 +20,7 @@ discovery:
   # /v1/models 需要 key 且会拦截非浏览器 UA（python-urllib 默认 UA 收 Cloudflare 1010），FreeRouter 与 LiteLLM 的 UA 均实测可通过
   mode: listing
   url: https://cleanapis.com/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   allow:

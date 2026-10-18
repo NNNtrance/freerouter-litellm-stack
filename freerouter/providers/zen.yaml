@@ -10,7 +10,7 @@ name_zh: OpenCode Zen
 status: paused
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: OPENCODE_ZEN_API_KEY
 litellm_prefix: openai
 api_base: https://opencode.ai/zen/v1
 docs_url: https://opencode.ai/docs/zen
@@ -25,7 +25,7 @@ discovery:
   # /v1/models 返回 42 条（含大量付费模型）；-free 后缀只是标记，真正能外部调用的只有 space-bunny-free
   mode: listing
   url: https://opencode.ai/zen/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   items_path: data
   id_path: id
   allow:

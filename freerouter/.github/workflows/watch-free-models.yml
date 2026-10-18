@@ -27,24 +27,24 @@ jobs:
 
       - name: Refresh the catalog
         env:
-          ZENMUX_API_KEY: <REDACTED_API_KEY> secrets.ZENMUX_API_KEY }}
-          OPENROUTER_API_KEY: <REDACTED_API_KEY> secrets.OPENROUTER_API_KEY }}
-          GEMINI_API_KEY: <REDACTED_API_KEY> secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY: <REDACTED_API_KEY> secrets.GROQ_API_KEY }}
-          CEREBRAS_API_KEY: <REDACTED_API_KEY> secrets.CEREBRAS_API_KEY }}
-          NVIDIA_NIM_API_KEY: <REDACTED_API_KEY> secrets.NVIDIA_NIM_API_KEY }}
-          MISTRAL_API_KEY: <REDACTED_API_KEY> secrets.MISTRAL_API_KEY }}
-          COHERE_API_KEY: <REDACTED_API_KEY> secrets.COHERE_API_KEY }}
-          CLOUDFLARE_API_KEY: <REDACTED_API_KEY> secrets.CLOUDFLARE_API_KEY }}
+          ZENMUX_API_KEY: ${{ secrets.ZENMUX_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          SILICONFLOW_API_KEY: <REDACTED_API_KEY> secrets.SILICONFLOW_API_KEY }}
-          MODELSCOPE_API_KEY: <REDACTED_API_KEY> secrets.MODELSCOPE_API_KEY }}
-          B_AI_API_KEY: <REDACTED_API_KEY> secrets.B_AI_API_KEY }}
+          SILICONFLOW_API_KEY: ${{ secrets.SILICONFLOW_API_KEY }}
+          MODELSCOPE_API_KEY: ${{ secrets.MODELSCOPE_API_KEY }}
+          B_AI_API_KEY: ${{ secrets.B_AI_API_KEY }}
         run: uv run python -m freerouter watch providers | tee catalog-changes.txt
 
       - name: Open a pull request when the catalog changed
         env:
-          GH_TOKEN: <REDACTED_API_KEY> github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           if [ -z "$(git status --porcelain catalog/)" ]; then

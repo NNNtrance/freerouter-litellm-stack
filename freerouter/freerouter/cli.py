@@ -36,8 +36,8 @@ class CallRecord(BaseModel):
     model_group: str | None = None
     model: str | None = None
     model_id: str | None = None
-    prompt_tokens: <REDACTED_API_KEY> = 0
-    completion_tokens: <REDACTED_API_KEY> = 0
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
     request_duration_ms: float | None = None
     spend: float = 0.0
     request_tags: tuple[str, ...] = ()
@@ -188,9 +188,9 @@ def cmd_calls(argv: Sequence[str]) -> int:
         took = f"{entry.request_duration_ms:.0f}ms" if entry.request_duration_ms else "-"
         mark = "OK  " if entry.status == "success" else "FAIL"
         source = "探测" if entry.is_probe else "调用"
-        tokens = <REDACTED_API_KEY>"{entry.prompt_tokens}+{entry.completion_tokens}"
+        tokens = f"{entry.prompt_tokens}+{entry.completion_tokens}"
         print(  # noqa: T201
-            f"{entry.startTime[11:19]}  {mark}  {took:<9} {tokens:<REDACTED_API_KEY> {source}"
+            f"{entry.startTime[11:19]}  {mark}  {took:<9} {tokens:<8} {source}"
         )
         print(f"          {entry.model_group or '?'}  →  {entry.model or '?'}")  # noqa: T201
     return 0
@@ -230,7 +230,7 @@ def cmd_keys(argv: Sequence[str]) -> int:
     missing: list[tuple[str, str, str | None, bool]] = []
     for provider in providers:
         if not provider.routable or not provider.credential:
-            <REDACTED_API_KEY>
+            continue
         if credentials_for(provider, configured):
             ready.append(f"{provider.name_zh} ({provider.provider_id})")
         else:

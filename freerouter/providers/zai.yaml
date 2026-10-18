@@ -4,7 +4,7 @@ name_zh: 智谱 Z.AI 国际站
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: ZAI_API_KEY
 litellm_prefix: openai
 api_base: https://api.z.ai/api/paas/v4
 docs_url: https://docs.z.ai/guides/llm/glm-4.7

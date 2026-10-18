@@ -40,7 +40,7 @@ FreeRouter 把多个平台的免费模型入口汇总成一个 OpenAI 兼容 API
 > - **智谱 AI (BigModel)**：好友实名注册后双方各得 Tokens 资源包，无需充值
 > - **ZenMux**：双方各得 $5 credit，被邀请人首次充值后额外获得 25% 奖励
 >
-> 不想走返利就用[官网直达入口](#已接入的平台)，注册流程完全一样；那张表里还有另外 29 家不带邀请链接的平台。返利不影响任何技术判断，见[说明](#挂自己的邀请链接)。
+> 不想走返利就用[官网直达入口](#已接入的平台)，注册流程完全一样；那张表里还有另外 27 家不带邀请链接的平台。返利不影响任何技术判断，见[说明](#挂自己的邀请链接)。
 
 <!-- END GENERATED: signup -->
 
@@ -179,10 +179,8 @@ FreeRouter 不会因为「便宜」就把模型当免费。三种发现方式各
 | [Requesty 聚合网关](https://docs.requesty.ai/quickstart) | 国际 | 欧洲聚合网关（OpenAI 兼容，600+ 模型）；免费档覆盖全部免费模型，200 请求/天，无需信用卡 | 200 次/天 | [**注册**](https://app.requesty.ai/api-keys) |
 | [SambaNova Cloud](https://docs.sambanova.ai/docs/en/get-started/overview) | 国际 | 官方免费档（无需信用卡、无需手机验证），Llama / DeepSeek / gpt-oss / gemma / MiniMax 开源模型 | 20 RPM | [**注册**](https://cloud.sambanova.ai/apis) |
 | [硅基流动 SiliconFlow](https://docs.siliconflow.cn/cn/userguide/quickstart) | 国内 | Qwen3-8B、GLM-4-9B 等 9B 以下开源模型永久免费 | 免费模型有 RPM/TPM 限制，具体见控制台 | [**注册**†](https://cloud.siliconflow.cn/i/CuI9M5Ht) · [官网](https://cloud.siliconflow.cn/account/ak) |
-| [Tiarina Cloud AI 网关](https://tiarina.cloud/features) | 国际 | 印尼 Tiarina Cloud 的 AI 网关（OpenAI 兼容），控制台 MODELS 页把 3 个 :free 模型标为 FREE（$0 输入/输出），账号零余额即可调用 | 免费窗口期，官方未公布 RPM/RPD；实测免费 | [**注册**](https://console.tiarina.cloud/ai) |
 | [Token Harbor 聚合网关](https://tokenharbor.ai/docs/getting-started/quickstart) | 国际 | 聚合网关（OpenAI 兼容 /v1），每个账号自带按 7 天滚动重置的免费额度，4 个 :free 模型在 $0 余额下可用 | 60 RPM | [**注册**](https://tokenharbor.ai/dashboard/api-keys) |
 | [智谱 Z.AI 国际站](https://docs.z.ai/guides/llm/glm-4.7) | 国际 | Z.AI 国际站的 GLM Flash 系列长期免费（glm-4.7-flash / glm-4.5-flash） | Flash 免费档并发低，官方未公开 RPM/R | [**注册**](https://z.ai/manage-apikey/apikey-list) |
-| [OpenCode Zen](https://opencode.ai/docs/zen) | 国际 | OpenCode 官方网关，space-bunny-free 对外可用（其余 -free 模型仅限 OpenCode 客户端内使用） | 免费促销档，官方未公开 RPM/RPD | [**注册**](https://opencode.ai/auth) |
 | [ZenMux](https://zenmux.ai/docs) | 国际 | 自动发现平台上所有 0 价模型 | 以控制台公布的并发与速率为准 | [**注册**†](https://zenmux.ai/invite/L4QDZW) · [官网](https://zenmux.ai/settings/keys) |
 | [智谱 AI (BigModel)](https://docs.bigmodel.cn/cn/guide/start/model-overview) | 国内 | GLM-4.7-Flash 等 Flash 系列长期免费 | 免费模型并发较低（部分为 1 并发），需要手机号 | [**注册**†](https://www.bigmodel.cn/invite?icode=bkHx%2Fep6dDks7UF3yJZB4LC%2Fk7jQAKmT1mpEiZXXnFw%3D) · [官网](https://bigmodel.cn/usercenter/apikeys) |
 
@@ -211,6 +209,8 @@ FreeRouter 不会因为「便宜」就把模型当免费。三种发现方式各
 - **GitHub Models**（`retired`）：GitHub Models 已于 2026-07-30 完全退役，playground、模型目录、推理 API 和 BYOK 全部关闭，官方引导迁移到 Azure AI Foundry。调研文档中这一条已过期。
 - **Hugging Face 推理**（`paused`）：每月少量免费额度；Inference Providers 的模型标识需要带上具体的 provider 段（例如 together/…），无法用统一规则自动发现
 - **NVIDIA NIM**（`paused`）：开发者计划体验额度，模型目录公开可查；allow/deny 规则只保留对话类模型
+- **Tiarina Cloud AI 网关**（`paused`）：控制台 MODELS 页明确把 deepseek-v4.1-flash:free / qwen3.8-flash:free / mimo-v2.6-flash:free 标成 FREE（$0.00 三项），/v1/models 也返回这 3 个 :free id；2026-10-05 用新注册 key 实测：3 条免费模型返回 429 provider rate limiting（偶发 502），而同一 key 调用付费模型（deepseek-v4.1-flash、glm-4.7-flash）返回 402 insufficient_quota —— 说明免费额度有效、只是上游免费池拥挤，不是账号问题
+- **OpenCode Zen**（`paused`）：官方免费促销模型；2026-10-04 用本账号 key 实测 space-bunny-free 返回 200，其余 10 个 -free 模型返回 403 FreeTierError「can only be used from within OpenCode」，故只放行可外部调用的一条
 
 > † 标记的是邀请链接，通过它注册**你和维护者双方都会拿到平台奖励**：
 >
@@ -315,7 +315,7 @@ referral_note: 双方各得 2000 万 tokens（约 ¥14 平台额度，不可提�
 在 `.env` 里填一个 webhook 就行，格式自动适配：
 
 ```dotenv
-FREEROUTER_NOTIFY_WEBHOOK=<REDACTED_API_KEY>
+FREEROUTER_NOTIFY_WEBHOOK=https://open.feishu.cn/open-apis/bot/v2/hook/xxxx
 ```
 
 支持飞书、企业微信、钉钉、Slack、Discord，以及任何接收 `{"text": "..."}` 的通用端点。不填就只写本地日志，用 `make changes` 查看。
@@ -341,7 +341,7 @@ name: New Platform
 name_zh: 新平台
 tier: free                    # free 永久免费 / trial 新用户额度 / offer 限时活动
 region: cn
-credential: <REDACTED_API_KEY>
+credential: NEWPLATFORM_API_KEY
 litellm_prefix: openai        # LiteLLM 原生前缀，或 openai + api_base
 api_base: https://api.newplatform.com/v1
 docs_url: https://docs.newplatform.com
@@ -352,7 +352,7 @@ limits:
 discovery:
   mode: listing
   url: https://api.newplatform.com/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: bearer
   deny: ["*embed*"]
 ```
 
@@ -408,7 +408,7 @@ model_list:
   - model_name: my-gpt
     litellm_params:
       model: openai/gpt-4o
-      api_key: <REDACTED_API_KEY>
+      api_key: os.environ/OPENAI_API_KEY
 ```
 
 ## 安全说明

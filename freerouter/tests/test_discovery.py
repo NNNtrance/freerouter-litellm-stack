@@ -152,7 +152,7 @@ def test_provider_without_credentials_is_skipped_not_failed() -> None:
 
 def test_retired_provider_never_contacts_the_network() -> None:
     # Given
-    provider = make_provider(status="retired", credential=<REDACTED_API_KEY>
+    provider = make_provider(status="retired", credential=None)
 
     # When
     result = discover(provider, {})
@@ -182,7 +182,7 @@ def test_unresolvable_url_template_is_an_error(monkeypatch: pytest.MonkeyPatch) 
     # Given
     _ = _stub(monkeypatch, {})
     provider = make_provider(
-        extra_credentials=<REDACTED_API_KEY>"DEMO_ACCOUNT_ID"],
+        extra_credentials=["DEMO_ACCOUNT_ID"],
         discovery={
             "mode": "listing",
             "url": "https://vendor.example/${DEMO_ACCOUNT_ID}/models",
@@ -192,7 +192,7 @@ def test_unresolvable_url_template_is_an_error(monkeypatch: pytest.MonkeyPatch) 
     )
 
     # When
-    result = discover(provider, {"DEMO_API_KEY": "k"}, require_credentials=<REDACTED_API_KEY>
+    result = discover(provider, {"DEMO_API_KEY": "k"}, require_credentials=False)
 
     # Then
     assert result.models == ()

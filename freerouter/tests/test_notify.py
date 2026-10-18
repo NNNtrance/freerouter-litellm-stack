@@ -10,11 +10,11 @@ EVENTS = (
 
 
 def test_feishu_and_wecom_get_their_native_shapes() -> None:
-    assert build_payload("<REDACTED_WEBHOOK_URL>", "t") == {
+    assert build_payload("https://open.feishu.cn/open-apis/bot/v2/hook/x", "t") == {
         "msg_type": "text",
         "content": {"text": "t"},
     }
-    assert build_payload("<REDACTED_WEBHOOK_URL>?key=x", "t") == {
+    assert build_payload("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=x", "t") == {
         "msgtype": "text",
         "text": {"content": "t"},
     }
@@ -22,8 +22,8 @@ def test_feishu_and_wecom_get_their_native_shapes() -> None:
 
 def test_slack_discord_and_generic_shapes() -> None:
     assert build_payload("https://hooks.slack.com/services/x", "t") == {"text": "t"}
-    assert build_payload("<REDACTED_WEBHOOK_URL>", "t") == {"content": "t"}
-    assert build_payload("<REDACTED_WEBHOOK_URL>", "t") == {"text": "t"}
+    assert build_payload("https://discord.com/api/webhooks/1/x", "t") == {"content": "t"}
+    assert build_payload("https://example.com/hook", "t") == {"text": "t"}
 
 
 def test_render_lists_every_change_with_its_target() -> None:

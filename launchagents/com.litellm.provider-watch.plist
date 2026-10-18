@@ -5,7 +5,7 @@
 	<key>EnvironmentVariables</key>
 	<dict>
 		<key>N8N_NOTIFY_WEBHOOK_URL</key>
-		<string><REDACTED_WEBHOOK_URL></string>
+		<string>https://CHANGE_ME_N8N_HOST/webhook/CHANGE_ME</string>
 	</dict>
 	<key>Label</key>
 	<string>com.litellm.provider-watch</string>

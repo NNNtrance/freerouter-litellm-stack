@@ -74,10 +74,10 @@ class Deployment:
     litellm_model: str
     tier: str
     api_base: str | None = None
-    api_key_env: <REDACTED_API_KEY> | None = None
+    api_key_env: str | None = None
     rpm: int | None = None
     extra_params: tuple[tuple[str, JsonValue], ...] = ()
-    max_input_tokens: <REDACTED_API_KEY> | None = None
+    max_input_tokens: int | None = None
     supports_tools: bool | None = None
     order: int | None = None
 
@@ -85,7 +85,7 @@ class Deployment:
         """Render the LiteLLM ``/model/new`` request body for this deployment."""
         params: dict[str, JsonValue] = {"model": self.litellm_model}
         if self.api_key_env:
-            <REDACTED_API_KEY>"api_key"] = f"os.environ/{self.api_key_env}"
+            params["api_key"] = f"os.environ/{self.api_key_env}"
         if self.api_base:
             params["api_base"] = self.api_base
         if self.rpm:
@@ -105,7 +105,7 @@ class Deployment:
         # LiteLLM's enable_pre_call_checks skips a deployment whose max_input_tokens
         # cannot fit the prompt, so a small-window route still serves small prompts.
         if self.max_input_tokens:
-            <REDACTED_API_KEY>"max_input_tokens"] = self.max_input_tokens
+            info["max_input_tokens"] = self.max_input_tokens
         if self.supports_tools is not None:
             info["supports_function_calling"] = self.supports_tools
         return {"model_name": self.alias, "litellm_params": params, "model_info": info}
@@ -205,10 +205,10 @@ def _build(
         litellm_model=litellm_model,
         tier=provider.tier.value,
         api_base=api_base,
-        api_key_env=<REDACTED_API_KEY>,
+        api_key_env=provider.credential,
         rpm=rpm,
         extra_params=extra,
-        max_input_tokens=<REDACTED_API_KEY>,
+        max_input_tokens=max_input_tokens,
         supports_tools=supports_tools,
         order=order,
     )

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING
 
 from freerouter.discovery import DiscoveryResult
@@ -12,7 +13,6 @@ from tests.conftest import make_provider
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-    from datetime import datetime
     from pathlib import Path
 
     import pytest
@@ -52,7 +52,7 @@ class FakeGateway:
     def delete(self, identifier: str) -> None:
         del self.deployments[identifier]
 
-    def chat(self, alias: str, _prompt: str, _max_tokens: <REDACTED_API_KEY> -> Response:
+    def chat(self, alias: str, _prompt: str, _max_tokens: int) -> Response:
         self.chats.append(alias)
         return self.replies.get(alias, OK)
 
@@ -215,9 +215,10 @@ def test_an_expiring_offer_is_announced_once(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     # Given
+    ends_on = (datetime.now(UTC) + timedelta(days=2)).date().isoformat()
     provider = make_provider(
         tier="offer",
-        offer={"ends_on": "2026-08-30", "note": "限时不限量"},
+        offer={"ends_on": ends_on, "note": "限时不限量"},
         discovery={"mode": "static", "models": ["alpha"]},
     )
     gateway = FakeGateway()

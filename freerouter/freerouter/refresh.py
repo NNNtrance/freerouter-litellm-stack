@@ -77,7 +77,7 @@ class Settings:
     interval: float = DEFAULT_INTERVAL
     recheck_after: timedelta = timedelta(hours=DEFAULT_RECHECK_HOURS)
     threshold: int = DEFAULT_THRESHOLD
-    webhook: <REDACTED_API_KEY> | None = None
+    webhook: str | None = None
     offer_warn_days: int = DEFAULT_OFFER_WARN_DAYS
     ready_timeout: float = DEFAULT_READY_TIMEOUT
     workers: int = DEFAULT_WORKERS
@@ -118,7 +118,7 @@ class Settings:
                 hours=_number(source, "FREEROUTER_RECHECK_HOURS", DEFAULT_RECHECK_HOURS)
             ),
             threshold=int(_number(source, "FREEROUTER_FAILURE_THRESHOLD", DEFAULT_THRESHOLD)),
-            webhook=<REDACTED_API_KEY>"FREEROUTER_NOTIFY_WEBHOOK", "").strip() or None,
+            webhook=source.get("FREEROUTER_NOTIFY_WEBHOOK", "").strip() or None,
             offer_warn_days=int(
                 _number(source, "FREEROUTER_OFFER_WARN_DAYS", DEFAULT_OFFER_WARN_DAYS)
             ),

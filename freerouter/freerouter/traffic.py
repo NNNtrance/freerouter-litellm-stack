@@ -134,7 +134,7 @@ def context_signals(
             continue
         current = signals.get(key, ContextSignal())
         if observed.outcome is ProbeOutcome.OK:
-            tokens = <REDACTED_API_KEY>, "prompt_tokens")
+            tokens = dig(entry, "prompt_tokens")
             if isinstance(tokens, int) and tokens > (current.proven or 0):
                 current = ContextSignal(tokens, current.stated_limit, current.too_large)
         elif observed.outcome is ProbeOutcome.TOO_LARGE:

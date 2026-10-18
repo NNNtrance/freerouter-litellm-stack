@@ -34,7 +34,7 @@ fi
 
 MASTER_KEY="sk-fr-$(openssl rand -hex 24)"
 SALT_KEY="sk-fr-salt-$(openssl rand -hex 24)"
-DB_PASSWORD=<REDACTED_API_KEY> rand -hex 24)
+DB_PASSWORD=$(openssl rand -hex 24)
 
 sed \
   -e "s/CHANGE_ME_MASTER_KEY/$MASTER_KEY/" \

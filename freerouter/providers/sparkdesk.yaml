@@ -4,7 +4,7 @@ name_zh: 讯飞星火
 status: active
 tier: trial
 region: cn
-credential: <REDACTED_API_KEY>
+credential: SPARK_API_KEY
 litellm_prefix: openai
 api_base: https://spark-api-open.xf-yun.com/v1
 docs_url: https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html

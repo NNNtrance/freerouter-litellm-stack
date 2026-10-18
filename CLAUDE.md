@@ -157,8 +157,8 @@ litellm-model-sync`.
   sync container never holds DATABASE_URL/POSTGRES_PASSWORD): CLOUDFLARE (+ACCOUNT_ID),
   COHERE, GEMINI, GROQ, OPENROUTER, CEREBRAS, MISTRAL, NVIDIA_NIM, LLM7 (placeholder
   `unused` — anonymous tier; LiteLLM needs it in `.env` too), LLMTR, plus two
-  renames — `ZHIPU_API_KEY=<REDACTED_API_KEY> and `HUGGINGFACE_API_KEY=<REDACTED_API_KEY>
-  (FreeRouter expects those exact names). Every name is a `credential:<REDACTED_API_KEY> in
+  renames — `ZHIPU_API_KEY=${ZAI_API_KEY}` and `HUGGINGFACE_API_KEY=${HF_TOKEN}`
+  (FreeRouter expects those exact names). Every name is a `credential:` in
   `freerouter/providers/*.yaml`, so the list tracks the provider catalog. Verified
   working: cloudflare, cohere, gemini, groq, openrouter. Dead but still passed so
   a rotation needs no compose edit: CEREBRAS (402), MISTRAL (401), NVIDIA_NIM
@@ -172,8 +172,8 @@ litellm-model-sync`.
   carries them (verified: the extended patch still `git apply --check`s clean
   against upstream main):
   - `kilo.yaml` — Kilo Gateway, **keyless**. `_skip_reason` drops any provider
-    whose `credential:<REDACTED_API_KEY> env var is empty, so a keyless platform still needs a
-    placeholder value (`KILO_API_KEY=<REDACTED_API_KEY> plus `discovery.auth: <REDACTED_API_KEY>
+    whose `credential:` env var is empty, so a keyless platform still needs a
+    placeholder value (`KILO_API_KEY=unused`) plus `discovery.auth: none`.
     16 `:free` models verified 200; `/models` also returns hundreds of paid
     entries, so the allow-list `*:free` + `kilo-auto/free` is mandatory.
   - `zai.yaml` — Z.AI **global** (`api.z.ai/api/paas/v4`), separate from the
@@ -203,7 +203,7 @@ litellm-model-sync`.
     rule zero (a listing is not a free tier). The real free basis is a **weekly
     credit grant** spent at catalog prices, so the allow-list is a hand-verified set
     of the *cheapest* models that answer 200, not the free-looking ones.
-    `/v1/models` is public (200 unauthenticated) → `auth: <REDACTED_API_KEY> Ids here contain
+    `/v1/models` is public (200 unauthenticated) → `auth: none`. Ids here contain
     `/` and `:` (`kilo-auto/free`, `deepseek-v4-flash:dev`) — quote every allow/deny
     entry. Free tier also throttles to ~4 requests per ~180 s window, so
     `probe.max_per_cycle: 3` and generate it from the probe CSV, not by hand.
@@ -287,7 +287,7 @@ litellm-model-sync`.
     passes the Cloudflare Turnstile check-in** at `apinex.bond/airdrop?tab=quests`. Evidence:
     `/v1/subscription` reported `allowed: false` with 1M tokens still unused and every `free/*`
     call answered `402 "Daily check-in required to use free models"`; after one human click
-    `allowed: true` and all 6 ids below answered a real chat 200 (usage `cost_tokens: <REDACTED_API_KEY>
+    `allowed: true` and all 6 ids below answered a real chat 200 (usage `cost_tokens: 0`).
     Only 6 of the 18 `free/*` catalog ids are on the free plan (`allowFree: true` assume false):
     `free/deepseek-v4.1-flash`, `free/deepseek-v4-flash-0731`, `free/deepseek-v4-pro-0813`,
     `free/gpt-6-luna`, `free/glm-5.3-flash`, `free/mimo-v2.6-pro` — kimi-k3, claude-4.6/opus,

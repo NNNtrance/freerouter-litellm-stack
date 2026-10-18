@@ -10,7 +10,7 @@ name_zh: NVIDIA NIM
 status: paused
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: NVIDIA_NIM_API_KEY
 litellm_prefix: nvidia_nim
 docs_url: https://build.nvidia.com/models
 console_url: https://build.nvidia.com/settings/api-keys
@@ -24,7 +24,7 @@ limits:
 discovery:
   mode: listing
   url: https://integrate.api.nvidia.com/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: none
   items_path: data
   id_path: id
   allow:

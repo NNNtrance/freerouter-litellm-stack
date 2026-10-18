@@ -4,7 +4,7 @@ name_zh: Electron Hub
 status: active
 tier: free
 region: global
-credential: <REDACTED_API_KEY>
+credential: ELECTRONHUB_API_KEY
 litellm_prefix: openai
 api_base: https://api.electronhub.ai/v1
 docs_url: https://docs.electronhub.ai
@@ -20,7 +20,7 @@ discovery:
   mode: listing
   # /models 明文返回 600+ 条（含 Claude/GPT 等付费模型），必须用 allow 白名单收口
   url: https://api.electronhub.ai/v1/models
-  auth: <REDACTED_API_KEY>
+  auth: none
   items_path: data
   id_path: id
   allow:

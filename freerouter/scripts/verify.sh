@@ -20,7 +20,7 @@ printf '1/5 网关健康 ....... '
 curl -fsS --max-time 10 -o /dev/null "$BASE/health/liveliness" && printf 'OK\n'
 
 printf '2/5 可用模型名 ..... '
-curl -fsS --max-time 20 -H "Authorization: <REDACTED_API_KEY> <REDACTED_BEARER_TOKEN>" "$BASE/v1/models" \
+curl -fsS --max-time 20 -H "Authorization: Bearer $MASTER_KEY" "$BASE/v1/models" \
   | python3 -c '
 import json
 import sys
@@ -78,7 +78,7 @@ ATTEMPT=1
 while [ "$ATTEMPT" -le 2 ]; do
   CODE=$(curl -sS --max-time 180 -o "$BODY" -D "$HEADERS" -w '%{http_code}' \
     "$BASE/v1/chat/completions" \
-    -H "Authorization: <REDACTED_API_KEY> <REDACTED_BEARER_TOKEN>" \
+    -H "Authorization: Bearer $MASTER_KEY" \
     -H 'Content-Type: application/json' \
     -d "$PAYLOAD" 2>/dev/null) || CODE=000
   [ "$CODE" = "200" ] && break
@@ -100,7 +100,7 @@ for line in Path(sys.argv[1]).read_text(errors="replace").splitlines():
 payload = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
 usage = payload.get("usage", {})
 print(
-    "HTTP 200  tokens=<REDACTED_API_KEY>  命中 {d}".format(
+    "HTTP 200  tokens={t}  命中 {d}".format(
         t=usage.get("total_tokens", 0),
         d=headers.get("x-litellm-model-id", "?"),
     )
