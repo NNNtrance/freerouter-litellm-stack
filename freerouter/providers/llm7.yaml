@@ -1,0 +1,37 @@
+id: llm7
+name: LLM7.io
+name_zh: LLM7.io
+status: active
+tier: free
+region: global
+# LLM7 serves its free ("turbo") tier anonymously; an empty token works. FreeRouter
+# skips a provider whose credential env var is empty, so compose passes a
+# placeholder (LLM7_API_KEY=<REDACTED_API_KEY> unless a real dash.llm7.io
+# token is set, which only raises the rate limits.
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://api.llm7.io/v1
+docs_url: https://docs.llm7.io
+console_url: https://dash.llm7.io
+summary: Anonymous OpenAI-compatible gateway; the "turbo" tier is free, "pro" needs balance
+free_basis: >-
+  /v1/models marks every entry with a tier; "turbo" entries answer anonymously at $0
+  (2026-10-07 sweep: DeepSeek-V4-Flash-0731, GLM-5.3-Flash, gemma4:31b, codestral-latest
+  answered 200; 2026-10-09 GLM-5.3-Flash returned a tool call). "pro" entries answer 402
+  "Pro models require balance" and the account has none, so require tier=turbo.
+free_basis_checked: 2026-10-09
+max_models: 15
+limits:
+  rpm: 10
+  note: anonymous 1 RPS / 10 RPM / 60 req/hr; catalog rotates often
+discovery:
+  mode: listing
+  url: https://api.llm7.io/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  require:
+    tier: [turbo]
+  context_path: context_window.tokens
+probe:
+  max_per_cycle: 2

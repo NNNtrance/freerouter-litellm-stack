@@ -1,0 +1,34 @@
+# Which differently-named models are the SAME model, so they pool behind one name.
+#
+# canonical_alias() (freerouter/planning.py) runs first and already handles the
+# mechanical cases: provider prefixes, ":free"/"-free", "-instruct"/"-it",
+# "qwen3.8" -> "qwen-3.8", ":" -> "-", lowercase. This map is applied to ITS
+# OUTPUT, for the cases a rule cannot know.
+#
+# Rule: merge only provably identical weights. A dated snapshot
+# (deepseek-v4-flash vs deepseek-v4-flash-0731) stays distinct until the provider's
+# docs say the undated id points at that snapshot -- a wrong merge silently mixes
+# two models' quality behind one name.
+#
+# To find candidates: python3 pool_lint.py  (prints paste-ready lines).
+merge:
+  dots3-note-prev: dots-3-note-preview          # zenmux abbreviation
+  north-mini-code-1-0: north-mini-code          # electronhub's versioned id
+  nemotron-3-ultra: nemotron-3-ultra-550b-a55b  # ollama short tag
+  nemotron-3-super: nemotron-3-super-120b-a12b  # ollama short tag
+  nemotron-3.5-lightning-30b-a3b: nemotron-3.5-lightning  # requesty long form
+  qwen-3-coder-30-a3b: qwen-3-coder-30b-a3b     # electronhub typo
+  codestral-2508: codestral-latest              # mistral: -latest points at 2508
+
+# Pairs that look alike but are different models; the lint stops suggesting them.
+distinct:
+  - [deepseek-v4-flash, deepseek-v4-flash-0731]
+  # 1017 is the October snapshot of deepseek-v4.1-flash (shorter outputs than the September
+  # release, per its own description) -- a different model, not a rename.
+  - [deepseek-v4.1-flash-1017, deepseek-v4.1-flash]
+
+# Never pooled under a shared name and never in a role: meta-routers that forward
+# to a random upstream (unpredictable latency and quality).
+exclude:
+  - free   # openrouter/free, kilo-auto/free
+  - auto

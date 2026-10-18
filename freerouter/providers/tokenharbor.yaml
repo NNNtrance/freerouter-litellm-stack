@@ -1,0 +1,32 @@
+id: tokenharbor
+name: Token Harbor
+name_zh: Token Harbor 聚合网关
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://tokenharbor.ai/v1
+docs_url: https://tokenharbor.ai/docs/getting-started/quickstart
+console_url: https://tokenharbor.ai/dashboard/api-keys
+summary: 聚合网关（OpenAI 兼容 /v1），每个账号自带按 7 天滚动重置的免费额度，4 个 :free 模型在 $0 余额下可用
+free_basis: 定价页写明免费档为「7 天滚动重置的免费额度」，含 MiMo V2.6 Flash 与 DeepSeek V4.1 Flash；2026-10-05 用新注册账号的 thk_live_ key 实测 deepseek-v4.1-flash:free、mimo-v2.6-flash:free、mimo-v2.5:free、deepseek-v4-flash:free 四条 chat 全部返回 200（内容 "OK"），且 /v1/models 返回 64 条、其中恰好这 4 条带 :free 后缀
+free_basis_checked: 2026-10-05
+max_models: 8
+limits:
+  rpm: 60
+  note: 免费账号 60 RPM / 1800 RPH（账号级，所有 key 与模型共享）；付费账号无速率限制。注意隐私：免费路由的请求与响应可能被 Token Harbor 保留（注册时已开启 free models 同意），不要把敏感内容路由到这里
+discovery:
+  # /v1/models 返回 64 条（Claude/GPT/Grok/GLM 等付费模型混在一起），只有 4 个 :free 是零余额可用的
+  mode: listing
+  url: https://tokenharbor.ai/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  allow:
+    - "deepseek-v4.1-flash:free"
+    - "deepseek-v4-flash:free"
+    - "mimo-v2.6-flash:free"
+    - "mimo-v2.5:free"
+probe:
+  max_per_cycle: 2

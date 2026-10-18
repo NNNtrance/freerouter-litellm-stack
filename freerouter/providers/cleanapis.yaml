@@ -1,0 +1,68 @@
+id: cleanapis
+name: Clean APIs
+name_zh: Clean APIs 聚合网关
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://cleanapis.com/v1
+docs_url: https://cleanapis.com/docs/getting-started
+console_url: https://cleanapis.com/dashboard/api-keys
+summary: 33 个模型的 OpenAI 兼容聚合网关，免费档每月 5M token、无需信用卡，目录内全部模型零余额可用
+free_basis: 定价页写明免费档为「Free — Forever，no card required，5M tokens / month，60 requests / min，All chat models」。2026-10-07 用新注册账号的 cc_ key 逐个 chat 实测 /v1/models 返回的全部 33 条均为 200，故整目录即 allow 白名单。关键安全属性：余额保持 $0.00，额度用尽后官方文档写明「With an empty balance you get a clear 402 instead of a surprise invoice」，因此池化路由最多报错、不会产生账单
+free_basis_checked: 2026-10-07
+max_models: 33
+limits:
+  rpm: 5
+  note: 免费档官方为 60 RPM（每分钟 100,000 token），此处主动压到 5 RPM，因为额度是每月 5M token 的滚动赠额，池化流量应缓慢消耗；额度用尽后余额 $0 会返回 402（不会计费）
+discovery:
+  # /v1/models 需要 key 且会拦截非浏览器 UA（python-urllib 默认 UA 收 Cloudflare 1010），FreeRouter 与 LiteLLM 的 UA 均实测可通过
+  mode: listing
+  url: https://cleanapis.com/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  allow:
+    - "muse-spark-1.1"
+    - "gemma-2-2b"
+    - "gpt-5.6-sol"
+    - "claude-opus-5"
+    - "claude-fable-5"
+    - "claude-mythos-preview"
+    - "kimi-k3"
+    - "glm-5.3"
+    - "deepseek-v4-pro-0813"
+    - "qwen3.8-max"
+    - "gpt-5.6-terra"
+    - "claude-opus-4.8"
+    - "gemini-3.7-flash"
+    - "claude-sonnet-5"
+    - "gpt-5.5"
+    - "grok-4.5"
+    - "deepseek-v4-flash-0731"
+    - "grok-4.6"
+    - "seed-2.1-pro"
+    - "glm-5.2"
+    - "qwen3.8-27b"
+    - "gpt-5.6-luna"
+    - "qwen3.7-max"
+    - "claude-opus-4.6"
+    - "gpt-5.5-pro"
+    - "claude-opus-4.7"
+    - "gemini-3.6-flash"
+    - "kimi-k2.6"
+    - "seed-2.1-turbo"
+    - "gemini-3.1-pro"
+    - "deepseek-v4-pro-max"
+    - "claude-fable-5.1"
+    - "claude-opus-5.5"
+  deny:
+    - "*embed*"
+    - "*rerank*"
+    - "*image*"
+    - "*audio*"
+    - "*tts*"
+    - "*video*"
+probe:
+  max_per_cycle: 2

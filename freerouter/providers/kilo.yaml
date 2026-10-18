@@ -1,0 +1,36 @@
+id: kilo
+name: Kilo Gateway
+name_zh: Kilo Gateway
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://api.kilo.ai/api/gateway
+docs_url: https://kilo.ai/gateway
+console_url: https://app.kilo.ai
+summary: Kilo Code 的通用网关，:free 后缀模型 $0 永久免费，无需注册即可匿名调用
+free_basis: 官方文档写明默认免费模型 $0 forever，仅 :free 后缀条目免费；匿名 keyless 200 请求/小时/IP。2026-10-04 实测 kilo-auto/free 与 5 个 :free 模型 chat 均返回 200
+free_basis_checked: 2026-10-04
+max_models: 25
+limits:
+  rpm: 5
+  rpd: 200
+  note: 匿名按 IP 计 200 请求/小时；带 key 免费层 5 RPM / 200 RPD
+discovery:
+  mode: listing
+  # /models 同时返回付费模型（claude/gpt 等数百条），所以只放行 :free 后缀与官方免费路由别名
+  url: https://api.kilo.ai/api/gateway/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  allow:
+    - "*:free"
+    - "kilo-auto/free"
+  deny:
+    - "*embed*"
+    - "*rerank*"
+    - "*guard*"
+    - "*content-safety*"
+probe:
+  max_per_cycle: 2

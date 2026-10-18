@@ -1,0 +1,39 @@
+id: sambanova
+name: SambaNova Cloud
+name_zh: SambaNova Cloud
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://api.sambanova.ai/v1
+docs_url: https://docs.sambanova.ai/docs/en/get-started/overview
+console_url: https://cloud.sambanova.ai/apis
+summary: 官方免费档（无需信用卡、无需手机验证），Llama / DeepSeek / gpt-oss / gemma / MiniMax 开源模型
+free_basis: 官方文档写明开源模型有免费档；2026-10-04 用本账号新建的 key 实测 gemma-4-31B-it 返回 200，其余模型返回 429「high demand」属免费档拥塞而非鉴权失败
+free_basis_checked: 2026-10-04
+max_models: 12
+limits:
+  rpm: 20
+  note: 免费档约 20 RPM / 20 RPD、每天约 200K token；高峰时段开源模型会返回 429 high demand
+discovery:
+  # /v1/models 是公开目录（无 key 也返回 200），所以必须用 allow 白名单锁死免费模型，
+  # 否则会把付费条目一并注册进池子。
+  mode: listing
+  url: https://api.sambanova.ai/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  allow:
+    - "DeepSeek-V3.1"
+    - "DeepSeek-V3.2"
+    - "Meta-Llama-3.3-70B-Instruct"
+    - "MiniMax-M3"
+    - "gemma-4-31B-it"
+    - "gpt-oss-120b"
+  deny:
+    - "*embed*"
+    - "*rerank*"
+    - "*guard*"
+probe:
+  max_per_cycle: 1

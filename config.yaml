@@ -1,0 +1,82 @@
+# LiteLLM gateway: FREE models only, and they come from the database, not this file.
+#
+# Read POOL_GUIDE.md before adding anything. Short version:
+#   * Every free provider is a FreeRouter provider yaml (freerouter/providers/), so
+#     it is discovered, probed, gated (>=64k context + tool calling + >=20B), merged
+#     under one canonical name, healed, and re-priced every hour. FreeRouter owns the
+#     "fr-" rows in Postgres via POST /model/new + /model/delete.
+#   * Clients use ONLY the role names: hermes-fast, hermes-smart, hermes-coder,
+#     hermes-long, hermes-vision (and free-router as the catch-all). Roles are
+#     defined in freerouter/policy/roles.yaml.
+#   * Antseed pins (a P2P market where a route is free only while pinned to a
+#     verified-free peer, which FreeRouter cannot express) live in
+#     antseed_routes.yaml and are hot-synced as "as-" DB rows by
+#     antseed_watch_cycle.py -- no restart. So model_list here is EMPTY on purpose.
+#
+# Removed 2026-10-09 (plans/2026-10-09-pool-organization.md): llm7/* and llmtr/*
+# (now freerouter/providers/llm7.yaml and llmtr.yaml, so they get healed and merged),
+# sambanova/* (duplicated sambanova.yaml), pollinations/* (legacy text API answers
+# 400 "being deprecated"), motif/motif-3 + llmtr-motif-3 (NOT zero-priced any more:
+# it billed per token), llmtr/evren-* (BYOK; Evren is routed directly).
+# Restore from config.yaml.bak-20261009-014425-pre-pool-plan if ever needed.
+model_list: []
+litellm_settings:
+  # num_retries / request_timeout live in router_settings only (one source of truth).
+  set_verbose: false
+  telemetry: false
+  drop_params: true
+
+router_settings:
+  # Latency is the priority (plans/2026-10-09-pool-organization.md). simple-shuffle
+  # weighted by rpm and sent 2/3 of gpt-oss-20b traffic to ollama (TTFT 2.3 s) over
+  # groq (0.46 s). Latency routing picks the fastest healthy deployment; the buffer
+  # spreads load across everything within 30% of the fastest so one free tier is not
+  # hammered into 429s. rpm is now a cap, not a weight. Latency memory is in-process
+  # (resets on restart; untried deployments are explored first).
+  routing_strategy: latency-based-routing
+  routing_strategy_args:
+    ttl: 14400           # 4 h: a slow provider stays remembered as slow (was 1 h, which
+                         # re-explored e.g. 18 s Gemini every hour)
+    lowest_latency_buffer: 0.3
+    max_latency_list_size: 10
+  # Skip deployments whose model_info.max_input_tokens can't fit the prompt
+  # (FreeRouter emits it per deployment).
+  enable_pre_call_checks: true
+  num_retries: 3
+  timeout: 90          # whole request; reasoning models need headroom
+  stream_timeout: 20   # time to first chunk; cuts the 112 s NVIDIA tail
+  # 0: the first failure cools that deployment down. With latency routing a deployment
+  # that only ever failed has no latency samples and ranks as the "fastest, untried",
+  # so without this the retries re-picked the same dead route (apinex 402, tokenharbor 429).
+  allowed_fails: 0
+  cooldown_time: 120
+  retry_after: 0
+  # A role that runs dry (or errors) degrades to a broader one instead of failing.
+  fallbacks:
+    # Hermes's primary model: one stable model keeps the provider's prompt cache warm
+    # (44k-token prompts at 99% cache hits), so it is NOT a latency-hopping role. When
+    # it fails, degrade to the quality tier, then speed, then anything usable.
+    - {"deepseek-v4.1-flash": ["hermes-smart", "hermes-fast", "free-router"]}
+    - {"hermes-smart": ["hermes-fast"]}
+    - {"hermes-coder": ["hermes-fast"]}
+    - {"hermes-vision": ["free-router"]}
+    - {"hermes-long": ["free-router"]}
+    - {"hermes-fast": ["free-router"]}
+  # Prompt too big for every member: retry on the long-context role.
+  context_window_fallbacks:
+    - {"hermes-fast": ["hermes-long"]}
+    - {"hermes-smart": ["hermes-long"]}
+    - {"hermes-coder": ["hermes-long"]}
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_url: os.environ/DATABASE_URL
+  # MUST stay true: LiteLLM reads this key from general_settings and lets it
+  # override the STORE_MODEL_IN_DB env var (proxy_server.py: general_settings
+  # .get("store_model_in_db", False)). With `false` here, POST /model/new and
+  # /model/delete return 500 "Set STORE_MODEL_IN_DB='True' in your env", which
+  # silently breaks every model registrar (danissimode sync_models.py and
+  # FreeRouter alike). .env already sets STORE_MODEL_IN_DB=True.
+  store_model_in_db: true
+  ui_username: admin
+  ui_password: <REDACTED_API_KEY>

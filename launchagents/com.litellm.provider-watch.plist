@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>N8N_NOTIFY_WEBHOOK_URL</key>
+		<string><REDACTED_WEBHOOK_URL></string>
+	</dict>
+	<key>Label</key>
+	<string>com.litellm.provider-watch</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/opt/homebrew/bin/python3</string>
+		<string>/Users/YOUR_USER/docker/composeyml/litellm-proxy/check_new_providers.py</string>
+	</array>
+	<key>StandardErrorPath</key>
+	<string>/Users/YOUR_USER/docker/composeyml/litellm-proxy/logs/provider-watch.err</string>
+	<key>StandardOutPath</key>
+	<string>/Users/YOUR_USER/docker/composeyml/litellm-proxy/logs/provider-watch.out</string>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>18</integer>
+		<key>Minute</key>
+		<integer>0</integer>
+		<key>Weekday</key>
+		<integer>0</integer>
+	</dict>
+</dict>
+</plist>

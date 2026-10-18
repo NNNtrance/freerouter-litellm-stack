@@ -1,0 +1,46 @@
+# Stable role names every client uses (Hermes, OpenCode, Poke, scripts). They never
+# change when providers come and go -- only their members do. No "/" in a name
+# (Hermes cannot take one).
+#
+# ORDER: a role may use `tiers:` instead of `include:`. Tier 1 is tried first (the fastest
+# healthy member of it wins); tier 2 only when every tier-1 deployment is cooled down or
+# failed; and so on. Put the strongest models that are also reliably fast in tier 1,
+# the safety net below. Tiers are LiteLLM's `order` (needs enable_pre_call_checks).
+# Order by measurement, not reputation: 2026-10-09 7k-token tool-call benchmark, median
+# time-to-answer: deepseek-v4.1-flash 0.6 s, gpt-oss-120b 0.8, mimo-v2.6-pro 1.2,
+# nemotron-3-super 1.4, deepseek-v4-pro-0813 2.5, kimi-k3 2.9, glm-5.3 5.3,
+# nemotron-3-ultra 5.7 (re-run: see POOL_GUIDE.md "Ordering").
+#
+# A member is a canonical alias (see aliases.yaml). Every usable, healthy deployment
+# of a listed model joins the role; LiteLLM's latency routing then picks the fastest
+# one, and router fallbacks (config.yaml) cover a role that runs dry.
+# Listing a name nothing serves yet is harmless -- it joins when a provider appears.
+#
+# Gemini is deliberately absent from fast/smart/vision: measured 2026-10-09 at 9-19 s
+# median time-to-first-token on a 7k-token tool-call prompt (others: 0.3-3 s). It still
+# joins hermes-long (400k+ window) and free-router, where latency routing deprioritises it.
+#
+# min_context: any usable deployment whose effective context is at least this joins.
+roles:
+  hermes-fast:
+    tiers:
+      - [gpt-oss-120b, deepseek-v4.1-flash, nemotron-3-super-120b-a12b, mimo-v2.6-flash]
+      - [gpt-oss-20b, deepseek-v4-flash, qwen-3.8-27b, qwen-3.8-flash, glm-4.7-flash,
+         glm-5.3-flash, nemotron-3.5-lightning, step-3.5-flash]
+  hermes-smart:
+    tiers:
+      - [deepseek-v4.1-flash, deepseek-v4-pro-0813, mimo-v2.6-pro, kimi-k3, gpt-oss-120b]
+      - [nemotron-3-super-120b-a12b, nemotron-3-ultra-550b-a55b, glm-5.3, glm-5.2,
+         minimax-m3, kimi-k2.6, qwen-3.8-max, command-a-plus-05-2026]
+      - [minimax-m2.7, gemini-3.8-flash]
+  hermes-coder:
+    tiers:
+      - [deepseek-v4.1-flash, deepseek-v4-pro-0813, kimi-k2.7-code]
+      - [glm-5.3, minimax-m2.7, minimax-m3, codestral-latest]
+      - [qwen-3-coder-30b-a3b, north-mini-code, laguna-s-2.1, mistral-code-latest]
+  hermes-vision:
+    tiers:
+      - [gemma-4-31b, qwen-3-vl-30b]
+      - [gemma-4-26b-a4b, mistral-small-3.2-24b, llama-4-scout-17b-16e]
+  hermes-long:
+    min_context: 400000

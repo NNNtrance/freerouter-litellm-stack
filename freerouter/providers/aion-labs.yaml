@@ -1,0 +1,31 @@
+id: aion-labs
+name: Aion Labs
+name_zh: Aion Labs
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://api.aionlabs.ai/v1
+docs_url: https://docs.aionlabs.ai
+console_url: https://www.aionlabs.ai/app/api-keys/
+summary: Aion 2.0/3.0/3.5 推理系列与一个 Llama 角色扮演模型
+free_basis: 永久免费层，无需信用卡；15 RPM、每天 2 万 token
+free_basis_checked: 2026-09-26
+max_models: 6
+limits:
+  rpm: 15
+  rpd: 20000
+  note: 官方标注 15 RPM / 20K tokens per day，很小的额度，适合当兜底而不是主力
+discovery:
+  # /v1/models 恒返回空 data，所以只能手写列表
+  mode: static
+  models:
+    - aion-labs/aion-3.5
+    - aion-labs/aion-3.5-mini
+    - aion-labs/aion-3.0
+    - aion-labs/aion-3.0-mini
+    - aion-labs/aion-2.0
+    - aion-labs/aion-rp-llama-3.1-8b
+probe:
+  max_per_cycle: 2

@@ -1,0 +1,42 @@
+id: tiarina
+name: Tiarina Cloud (AI Gateway)
+name_zh: Tiarina Cloud AI 网关
+# PAUSED 2026-10-17: the free tier is now gated behind a balance top-up. Live check with this
+# key: all :free ids answer 403 {"code":"free_tier_locked","message":"Free models require the
+# free tier. Top up your Tiarina Cloud balance to unlock it."} while a paid id answers 402
+# insufficient_quota -- i.e. the account cannot reach any model, free or paid. The catalog
+# still lists :free ids (5 now), so this is a paywall, not a retired model. Pool rows went
+# quarantined 2026-10-11 and never recovered (14 consecutive failures) -- pool doctor alerted
+# nightly. Un-pause (status: active + a real 200 on a :free id) only if a promo returns or the
+# account is deliberately topped up; nothing here is worth paying for.
+status: paused
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://ai.tiarina.cloud/v1
+docs_url: https://tiarina.cloud/features
+console_url: https://console.tiarina.cloud/ai
+summary: 印尼 Tiarina Cloud 的 AI 网关（OpenAI 兼容），控制台 MODELS 页把 3 个 :free 模型标为 FREE（$0 输入/输出），账号零余额即可调用
+free_basis: 控制台 MODELS 页明确把 deepseek-v4.1-flash:free / qwen3.8-flash:free / mimo-v2.6-flash:free 标成 FREE（$0.00 三项），/v1/models 也返回这 3 个 :free id；2026-10-05 用新注册 key 实测：3 条免费模型返回 429 provider rate limiting（偶发 502），而同一 key 调用付费模型（deepseek-v4.1-flash、glm-4.7-flash）返回 402 insufficient_quota —— 说明免费额度有效、只是上游免费池拥挤，不是账号问题
+free_basis_checked: 2026-10-05
+max_models: 8
+limits:
+  note: 免费窗口期，官方未公布 RPM/RPD；实测免费模型经常返回 429「provider is rate limiting this model」，探针需要靠退避慢慢碰运气
+discovery:
+  # /v1/models 返回 16 条（含付费模型），只有 3 个 :free 是免费的，所以逐条写死
+  mode: listing
+  url: https://ai.tiarina.cloud/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  allow:
+    - "deepseek-v4.1-flash:free"
+    - "qwen3.8-flash:free"
+    - "mimo-v2.6-flash:free"
+  deny:
+    - "*-pro"
+    - "*glm-5*"
+    - "*kimi*"
+probe:
+  max_per_cycle: 2

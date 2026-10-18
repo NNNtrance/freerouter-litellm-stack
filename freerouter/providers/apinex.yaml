@@ -1,0 +1,49 @@
+id: apinex
+name: APInex
+name_zh: APInex 聚合网关（每日签到解锁免费额度）
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://api.apinex.bond/v1
+docs_url: https://apinex.bond/docs
+console_url: https://apinex.bond/keys
+summary: OpenAI 兼容聚合网关；免费档每天 1,000,000 token（00:00 UTC 重置）、5 RPM，仅 6 个 free/* 模型对免费档开放
+free_basis: >
+  免费档是「每日签到解锁」制，不是被动赠额。/api/public/subscriptions 报 freeDailyTokens=<REDACTED_API_KEY>
+  /api/public/rate-limits 报 rpmFree=5；/v1/subscription 在未签到时返回 allowed=false，且任何 free/* 调用
+  返回 402 "Daily check-in required to use free models"（实测 2026-10-07）。签到需要在 apinex.bond/airdrop
+  过 Cloudflare Turnstile——**必须由人每天点一次**，池化路由在漏签的那天会整体 402。
+  2026-10-07 签到后用同一把 key 逐个实测以下 6 个 id：全部 200 且 content 非空，
+  usage.cost_tokens=<REDACTED_API_KEY> free/* 模型 allowFree=false，需订阅，已排除。
+  安全属性：余额 $0.00 且免费模型不计费，所以额度用尽/未签到只会 402，不会产生账单。这些是推理模型
+  （usage 里带 reasoning_tokens），max_tokens 太小时 content 会是空串——不是故障。
+free_basis_checked: 2026-10-07
+max_models: 6
+limits:
+  rpm: 5
+  note: 免费档官方硬上限 5 RPM（订阅档 30），这里照实填 5；1M token/天是按 (输入+输出)×weight 扣减的账户级赠额，weight 为 2~3，实际约 33 万 token/天
+discovery:
+  mode: listing
+  url: https://api.apinex.bond/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  allow:
+    - "free/deepseek-v4.1-flash"
+    - "free/deepseek-v4-flash-0731"
+    - "free/deepseek-v4-pro-0813"
+    - "free/gpt-6-luna"
+    - "free/glm-5.3-flash"
+    - "free/mimo-v2.6-pro"
+  deny:
+    - "*embed*"
+    - "*rerank*"
+    - "*image*"
+    - "*audio*"
+    - "*tts*"
+    - "*video*"
+probe:
+  # 额度是账户级每日赠额且只有 5 RPM，探测越少越好
+  max_per_cycle: 1

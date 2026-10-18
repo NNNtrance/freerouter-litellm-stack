@@ -1,0 +1,51 @@
+id: ollama
+name: Ollama Cloud
+name_zh: Ollama Cloud
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://ollama.com/v1
+docs_url: https://docs.ollama.com/cloud
+console_url: https://ollama.com/settings/keys
+referral_url: https://ollama.com/download
+referral_note: 免费额度按 session（每 5 小时重置）与 weekly（每 7 天重置）计，官方未公开具体数字
+summary: 17 个云端对话模型，含 deepseek-v4.1-flash、gpt-oss:120b、glm-5.3、kimi-k3、nemotron-3-ultra
+free_basis: 免费层有使用额度限制，按输入/缓存/输出 token 加权计；OpenAI 兼容端点 https://ollama.com/v1
+free_basis_checked: 2026-09-26
+max_models: 20
+limits:
+  rpm: 20
+  note: 官方只公开"每 5 小时 session 额度 + 每 7 天 weekly 额度"，没有公开数字，rpm 是保守估计
+discovery:
+  mode: listing
+  url: https://ollama.com/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  # 不用 whole_catalog_is_free：Ollama 也在卖付费的云端模型，目录会变。
+  # 2026-09-26 实测该 key 的 /v1/models 返回这 17 个，全部逐一验证过能推理。
+  allow:
+    - "mistral-large-3:675b"
+    - "deepseek-v4.1-flash"
+    - "deepseek-v4-pro:0813"
+    - "gpt-oss:120b"
+    - "gpt-oss:20b"
+    - "minimax-m2.7"
+    - "minimax-m3"
+    - "glm-5.2"
+    - "glm-5.3"
+    - "glm-5.3-flash"
+    - "kimi-k2.6"
+    - "kimi-k2.7-code"
+    - "kimi-k3"
+    - "nemotron-3-ultra"
+    - "nemotron-3-super"
+    - "nemotron-3-nano:30b"
+    - "gemma4:31b"
+  deny:
+    - "*embed*"
+    - "*rerank*"
+probe:
+  max_per_cycle: 5

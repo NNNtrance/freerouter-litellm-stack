@@ -1,0 +1,25 @@
+id: zai
+name: Z.AI (global)
+name_zh: 智谱 Z.AI 国际站
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://api.z.ai/api/paas/v4
+docs_url: https://docs.z.ai/guides/llm/glm-4.7
+console_url: https://z.ai/manage-apikey/apikey-list
+summary: Z.AI 国际站的 GLM Flash 系列长期免费（glm-4.7-flash / glm-4.5-flash）
+free_basis: 官方标注 Flash 系列免费；2026-10-04 用本账号 key 实测 glm-4.7-flash 与 glm-4.5-flash 的 chat 均返回 200，其余（glm-5.3、glm-4.5-air 等）返回 429 Insufficient balance
+free_basis_checked: 2026-10-04
+max_models: 6
+limits:
+  note: Flash 免费档并发低，官方未公开 RPM/RPD 数字
+discovery:
+  # /models 返回的是账号目录（含付费模型），且不含 *-flash，所以手写实测通过的免费模型
+  mode: static
+  models:
+    - glm-4.7-flash
+    - glm-4.5-flash
+probe:
+  max_per_cycle: 2

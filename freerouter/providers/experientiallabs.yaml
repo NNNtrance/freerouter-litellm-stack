@@ -1,0 +1,69 @@
+id: experientiallabs
+name: Experiential Labs
+name_zh: Experiential Labs
+status: active
+tier: free
+region: global
+# ONE key reaches both surfaces: /v1/* (inference) and /api/* (management reads).
+# Keys are "xpl_" + 40 hex, org-scoped, minted in the web console (a key cannot
+# mint keys). No card is on file, so this org can never be invoiced.
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://api.experientiallabs.ai/v1
+docs_url: https://platform.experientiallabs.ai/llms.txt
+console_url: https://platform.experientiallabs.ai/api-keys
+summary: >-
+  Aggregator over hosted providers plus its own cloud; 6 of 299 callable rows are
+  promotional-free, and the 2 usable ones are 1M-context DeepSeek Flash with tool calling
+free_basis: >-
+  GET /api/models (952 rows) marks exactly 6 rows promotional_listed=true; every
+  other row carries a real price, and the same model read through
+  /v1/models (pricing.input_nano_usd_per_million_tokens) is NOT zero -- so price
+  is the wrong signal here and the promo flag is the only one. Verified live
+  2026-10-17: deepseek-v4.1-flash-1017 (296 in / 46 out) and
+  deepseek-v4.1-flash-uncensored (301 in / 50 out) both answered a tools request
+  with a real tool_calls and appear in GET /api/gateway/usage/events as
+  cost_nano_usd=0 with free_nano_usd=144000 / 81180 -- i.e. the whole call was
+  covered by the promotional allowance. Account-level safety net (what makes a
+  not-perfectly-free row acceptable): org is on the Free plan ($0/mo), no card,
+  and "Free models past the daily limit" is set to "Stop at the free limit", so
+  credits overflow is OFF (llms.txt: it needs a saved card AND a settled $1
+  charge, and only auto-enables at the first real payment). Past the allowance a
+  request answers 429 insufficient_quota / free_limit_reached instead of billing.
+  The 600-credit balance is a free grant (1 credit = 1c) that NON-promo calls do
+  draw down, so never widen this allow list to a priced model.
+free_basis_checked: 2026-10-17
+max_models: 8
+limits:
+  rpm: 10
+  note: >-
+    per-org daily + hourly token allowances per promotional model; past them 429
+    free_limit_reached. Not documented per model -- keep rpm low and let the
+    router cool down on 429.
+discovery:
+  mode: listing
+  url: https://api.experientiallabs.ai/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  # The 6 promotional_listed slugs (native slugs; the same ids the gateway serves).
+  # jev-latest (32k) and clef / clef-flash (no tool calling) are listed for
+  # completeness -- the 64k + tool-calling gate quarantines them with a
+  # drop_reason, which is the honest record. gpt-6-luna-decisions currently
+  # answers 503 unavailable_route (its provider rung is stale), so the prober
+  # owns it: it appears when the rung returns.
+  allow:
+    - "deepseek-v4.1-flash-1017"
+    - "deepseek-v4.1-flash-uncensored"
+    - "gpt-6-luna-decisions"
+    - "clef"
+    - "clef-flash"
+    - "jev-latest"
+  deny:
+    - "*embed*"
+    - "*rerank*"
+    - "*guard*"
+    - "*moderation*"
+probe:
+  # 6 rows, hourly cycle; 2/cycle keeps the free token allowance for real traffic.
+  max_per_cycle: 2

@@ -1,0 +1,52 @@
+id: electronhub
+name: Electron Hub
+name_zh: Electron Hub
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://api.electronhub.ai/v1
+docs_url: https://docs.electronhub.ai
+console_url: https://app.electronhub.ai/
+summary: 600+ 模型的聚合网关，免费档按周赠送额度，只放行实测能用的低价模型
+free_basis: 注册即得每周免费额度（无需信用卡），额度按目录标价扣减，故只放行最低价的实测可用模型。2026-10-04 逐个 chat 实测 200 才写入 allow。注意：目录中标价 0 的 ":dev" 模型属付费 Coding Plan，实测 403
+free_basis_checked: 2026-10-04
+max_models: 20
+limits:
+  rpm: 5
+  note: 免费档突发约 4 次请求后返回 429，窗口约 180 秒
+discovery:
+  mode: listing
+  # /models 明文返回 600+ 条（含 Claude/GPT 等付费模型），必须用 allow 白名单收口
+  url: https://api.electronhub.ai/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  allow:
+    - "deepseek-v4-flash"
+    - "gemma-3-4b-it"
+    - "gpt-4o-mini"
+    - "hermes-4-14b"
+    - "llama-3.2-1b"
+    - "llama-3.2-3b"
+    - "mimo-v2.6-flash"
+    - "ministral-8b-latest"
+    - "mistral-small-3.2-24b-instruct"
+    - "nemotron-3.5-lightning"
+    - "north-mini-code-1-0"
+    - "qwen3-coder-30-a3b-instruct"
+    - "qwen3.7-flash"
+    - "step-3.5-flash"
+  deny:
+    - "*:dev"
+    - "*embed*"
+    - "*rerank*"
+    - "*guard*"
+    - "*content-safety*"
+    - "*image*"
+    - "*audio*"
+    - "*tts*"
+    - "*video*"
+probe:
+  max_per_cycle: 1

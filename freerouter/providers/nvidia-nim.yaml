@@ -1,0 +1,70 @@
+id: nvidia-nim
+name: NVIDIA NIM
+name_zh: NVIDIA NIM
+# paused 2026-09-27: NVIDIA's hosted functions answer FreeRouter's 1-token probe
+# in ~200ms but a real generation often stalls — measured 118-150s on
+# deepseek-v4.1-flash, which made ~1 in 4 calls to that alias pay a two-minute
+# penalty before LiteLLM failed over to evren. It also contributed 34 of the 90
+# quarantined models, all 404 "function not provisioned for account". Same
+# mechanism as the `huggingface` provider. Set back to `active` to re-enable.
+status: paused
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: nvidia_nim
+docs_url: https://build.nvidia.com/models
+console_url: https://build.nvidia.com/settings/api-keys
+summary: Llama、Gemma、Mistral 等 100+ 开源模型
+free_basis: 开发者计划体验额度，模型目录公开可查；allow/deny 规则只保留对话类模型
+free_basis_checked: 2026-08-25
+max_models: 60
+limits:
+  rpm: 40
+  note: 需要邮箱注册并完成手机验证
+discovery:
+  mode: listing
+  url: https://integrate.api.nvidia.com/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  allow:
+    - "*instruct*"
+    - "*-it"
+    - "*chat*"
+    # The three patterns above encode an "-instruct" naming convention NVIDIA has
+    # since dropped: nemotron-3-ultra-550b-a55b, nemotron-3-nano-omni-30b,
+    # deepseek-v4.1-flash, glm-5.3-flash and llama-3.1-nemotron-70b all match
+    # none of them, so the catalog listed 82 models and discovery kept 22 -- with
+    # *zero* of the models this account actually has provisioned. Matching on
+    # family name instead lets provisioned models in. Widening the allow list is
+    # only safe together with the max_models bump above: the cap is applied after
+    # an alphabetical sort, so at 25 the newly-admitted models sort out after the
+    # already-sorted "-instruct" block and get evicted (measured: 1 of 7
+    # surviving at 25, 5 of 7 at 60). The rest are probed and quarantined.
+    - "*nemotron*"
+    - "*deepseek*"
+    - "*glm*"
+    - "*llama*"
+    - "*qwen*"
+    - "*gemma*"
+    - "*kimi*"
+    - "*mistral*"
+    - "*phi*"
+  deny:
+    - "*embed*"
+    - "*rerank*"
+    - "*bge*"
+    - "*guard*"
+    - "*safety*"
+    - "*reward*"
+    - "*ocr*"
+    - "*-vl*"
+    - "*vision*"
+    - "*diffusion*"
+    - "*image*"
+    - "*asr*"
+    - "*tts*"
+    - "*riva*"
+    - "*paddle*"
+probe:
+  max_per_cycle: 6

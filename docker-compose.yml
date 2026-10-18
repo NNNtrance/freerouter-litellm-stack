@@ -1,0 +1,158 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: litellm-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: <REDACTED_API_KEY>
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
+    hostname: litellm
+    env_file:
+      - .env
+    # FreeRouter registers every model with `api_key: <REDACTED_API_KEY>,
+    # and THIS container is the one that has to resolve that at request time.
+    # ZHIPU_API_KEY and HUGGINGFACE_API_KEY are the names used in
+    # freerouter/providers/*.yaml, but .env stores them under different names,
+    # so they must be bridged here too — the same mapping model-sync gets.
+    # Without this, models FreeRouter registers for those providers authenticate
+    # as "The api_key client option must be set".
+    environment:
+      - ZHIPU_API_KEY=<REDACTED_API_KEY>
+      - HUGGINGFACE_API_KEY=<REDACTED_API_KEY>
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./config.yaml:/app/config.yaml
+    command: [ "--config", "/app/config.yaml", "--port", "4000" ]
+    restart: always
+    # model-sync waits on this (depends_on: condition: service_healthy), so the
+    # healthcheck has to exist or model-sync never starts. The image ships
+    # python but no curl, hence urllib.
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          python -c "import urllib.request;
+          urllib.request.urlopen('http://localhost:4000/health/liveliness')"
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    depends_on:
+      - db
+
+  # FreeRouter: discovers free models across platforms, probes them, and
+  # reconciles the survivors into LiteLLM as "fr-" tagged deployments via
+  # POST /model/new and POST /model/delete. Per healthy model it registers:
+  #   fr/<provider>/<model>  direct, always addressable
+  #   free-router             the shared pool
+  #   <provider>-free         per-provider group
+  #   <canonical>             e.g. llama-3.3-70b, pooled across platforms
+  #                          (canonical_alias, patches/canonical-pooling.patch)
+  model-sync:
+    build:
+      context: ./freerouter
+      dockerfile: Dockerfile
+    container_name: litellm-model-sync
+    restart: unless-stopped
+    environment:
+      - LITELLM_BASE_URL=http://litellm:4000
+      # FreeRouter reads FREEROUTER_GATEWAY_URL, not LITELLM_BASE_URL
+      # (refresh.py). Both are set so the target is explicit, not defaulted.
+      - FREEROUTER_GATEWAY_URL=http://litellm:4000
+      - FREEROUTER_PROVIDERS_DIR=/app/providers
+      - FREEROUTER_STATE_DIR=/app/state
+      - FREEROUTER_REFRESH_INTERVAL=3600
+      # Credentials for the platforms FreeRouter should discover + probe. A
+      # platform with no key is skipped cleanly and its models leave the pool
+      # (refresh.py _ingest). Every name below is a `credential:<REDACTED_API_KEY> in
+      # freerouter/providers/*.yaml, so this list tracks the provider catalog.
+      #
+      # Deliberately NOT `env_file: .env`: the sync container talks to LiteLLM
+      # over HTTP and has no business holding DATABASE_URL / POSTGRES_PASSWORD.
+      #
+      # Known-dead keys are still passed so a rotation needs no compose edit:
+      #   CEREBRAS_API_KEY  402 payment required
+      #   MISTRAL_API_KEY   401 invalid key
+      #   NVIDIA_NIM_API_KEY valid key, but the account has 0 provisioned NIM
+      #                       endpoints -> every model 404s "Function not found"
+      #   ZHIPU_API_KEY     .env ZAI_API_KEY is truncated (no ".secret" part)
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+      - CLOUDFLARE_API_KEY=<REDACTED_API_KEY>
+      - CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
+      - COHERE_API_KEY=<REDACTED_API_KEY>
+      - GEMINI_API_KEY=<REDACTED_API_KEY>
+      - GROQ_API_KEY=<REDACTED_API_KEY>
+      - OPENROUTER_API_KEY=<REDACTED_API_KEY>
+      - CEREBRAS_API_KEY=<REDACTED_API_KEY>
+      - MISTRAL_API_KEY=<REDACTED_API_KEY>
+      - NVIDIA_NIM_API_KEY=<REDACTED_API_KEY>
+      - ZENMUX_API_KEY=<REDACTED_API_KEY>
+      - MODELSCOPE_API_KEY=<REDACTED_API_KEY>
+      - OLLAMA_API_KEY=<REDACTED_API_KEY>
+      - AION_LABS_API_KEY=<REDACTED_API_KEY>
+      - EVREN_API_KEY=<REDACTED_API_KEY>
+      - ZAI_API_KEY=<REDACTED_API_KEY>
+      # Kilo Gateway is keyless-anonymous (auth: <REDACTED_API_KEY>; the value is a placeholder
+      # that only exists so _skip_reason does not drop the provider.
+      - KILO_API_KEY=<REDACTED_API_KEY>
+      - OPENCODE_ZEN_API_KEY=<REDACTED_API_KEY>
+      - SAMBANOVA_API_KEY=<REDACTED_API_KEY>
+      - ELECTRONHUB_API_KEY=<REDACTED_API_KEY>
+      # Tiarina Cloud AI Gateway (Indonesian): 3 ':free' models, works on a $0 balance.
+      - TIARINA_API_KEY=<REDACTED_API_KEY>
+      # Token Harbor: rolling 7-day free allowance, 4 ':free' models on a $0 wallet.
+      - TOKENHARBOR_API_KEY=<REDACTED_API_KEY>
+      # Requesty: free tier = all free models, 200 req/day, no card.
+      - REQUESTY_API_KEY=<REDACTED_API_KEY>
+      # Clean APIs: 5M tokens/month free, no card. Balance must stay $0.00 --
+      # the free allowance is what serves traffic, and an empty balance turns an
+      # exhausted allowance into a 402 rather than an invoice.
+      - CLEANAPIS_API_KEY=<REDACTED_API_KEY>
+      # APInex: 1M free-model tokens/day on a $0 balance, but the allowance is
+      # LOCKED until a human passes the daily Cloudflare Turnstile check-in at
+      # apinex.bond/airdrop?tab=quests. Unsigned days answer 402 (never a bill).
+      - APINEX_API_KEY=<REDACTED_API_KEY>
+      # Experiential Labs: 6 of 299 catalog rows are promotional-free
+      # (promotional_listed=true). Org is Free-plan with no card and credits
+      # overflow off, so an exhausted allowance answers 429/402, never a charge.
+      # Only the promo rows are allow-listed -- a priced row would draw the free
+      # credit grant.
+      - EXPLABS_API_KEY=<REDACTED_API_KEY>
+      # LLM7.io free ("turbo") tier is anonymous; a real dash.llm7.io token only
+      # raises limits. Placeholder keeps _skip_reason from dropping the provider.
+      - LLM7_API_KEY=<REDACTED_API_KEY>
+      # llmtr.com is a PAID aggregator: llmtr.yaml routes only its zero-priced
+      # entries and re-checks the price every cycle (priced_catalog).
+      - LLMTR_API_KEY=<REDACTED_API_KEY>
+      # Circuit breaker: a cycle that would delete more than this share of the
+      # fr- rows skips its deletes instead (freerouter/refresh.py apply_plan).
+      - FREEROUTER_MAX_DELETE_FRACTION=0.25
+      # Renames: FreeRouter expects these exact names, .env uses different ones.
+      - ZHIPU_API_KEY=<REDACTED_API_KEY>
+      # huggingface provider is `paused` upstream, so this is inert until they
+      # unpause it; passed so the key is ready when they do.
+      - HUGGINGFACE_API_KEY=<REDACTED_API_KEY>
+    volumes:
+      # Probe/quarantine state must outlive the container, otherwise every
+      # rebuild re-probes the whole catalog from scratch.
+      - ./freerouter/state:/app/state
+      # Pool policy (merges, roles, capability overrides). Mounted, not baked, so
+      # an edit to freerouter/policy/*.yaml takes effect on the next cycle with no
+      # rebuild. See POOL_GUIDE.md.
+      - ./freerouter/policy:/app/policy:ro
+    networks:
+      - default
+    depends_on:
+      litellm:
+        condition: service_healthy
+# Sent by Poke

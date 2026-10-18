@@ -1,0 +1,35 @@
+id: llmtr
+name: llmtr.com
+name_zh: llmtr.com
+status: active
+tier: free
+region: tr
+# PAID aggregator (347 models, bills per token on LLMTR_API_KEY). Only the zero-priced
+# catalog entries are routed, and priced_catalog re-reads the price every cycle, so a
+# model that gets repriced leaves the pool within one refresh instead of billing.
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://llmtr.com/v1
+docs_url: https://llmtr.com
+console_url: https://llmtr.com
+summary: Turkish aggregator; a handful of catalog entries are priced 0/0
+free_basis: >-
+  /v1/models pricing.prompt and pricing.completion are "0" for 17 of 347 entries
+  (2026-10-09); 8 of those answered with this key on 2026-09-26. evren/* entries are
+  BYOK (need an Evren key saved in llmtr Settings) and Evren is routed directly anyway.
+free_basis_checked: 2026-10-09
+max_models: 15
+limits:
+  rpm: 10
+discovery:
+  mode: priced_catalog
+  url: https://llmtr.com/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  prompt_price_path: pricing.prompt
+  completion_price_path: pricing.completion
+  deny:
+    - "evren/*"
+probe:
+  max_per_cycle: 2

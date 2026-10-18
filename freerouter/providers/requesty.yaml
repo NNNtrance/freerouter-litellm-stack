@@ -1,0 +1,34 @@
+id: requesty
+name: Requesty
+name_zh: Requesty 聚合网关
+status: active
+tier: free
+region: global
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://router.requesty.ai/v1
+docs_url: https://docs.requesty.ai/quickstart
+console_url: https://app.requesty.ai/api-keys
+summary: 欧洲聚合网关（OpenAI 兼容，600+ 模型）；免费档覆盖全部免费模型，200 请求/天，无需信用卡
+free_basis: 定价页写明 Free 档「Access to all free models / 200 requests per day / No credit card required」；2026-10-05 用新注册账号的 key 实测 /v1/models 返回 754 条、其中 13 条 input_price=output_price=0，且 6 条真实 chat 返回 200（google/gemma-4-31b-it、mistral/leanstral-1-5、nvidia/nemotron-3-super-120b-a12b、nvidia/nemotron-3.5-lightning-30b-a3b、nvidia/nemotron-3-ultra-550b-a55b、novita/ling-3.1-flash），免费的 NVIDIA 条目 data_used_for_training=true
+free_basis_checked: 2026-10-05
+max_models: 20
+limits:
+  rpd: 200
+  note: 免费档 200 请求/天；免费模型列表按 catalog 的零价动态发现，NVIDIA 系免费条目标注 data_used_for_training=true，敏感内容不要走这里
+discovery:
+  # 754 条目录里只有 13 条零价（input_price=output_price=0）；零价即免费，所以用 priced_catalog 动态跟随
+  mode: priced_catalog
+  url: https://router.requesty.ai/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  prompt_price_path: input_price
+  completion_price_path: output_price
+  deny:
+    - "*content-safety*"
+    - "poolside/*"
+    - "novita/inclusionai/ling-3.0-tiny"
+    - "nvidia/nemotron-3-nano-30b-a3b"
+probe:
+  max_per_cycle: 2

@@ -1,0 +1,60 @@
+id: evren
+name: Evren LLM API
+name_zh: EVREN LLM API
+status: active
+tier: offer
+region: tr
+credential: <REDACTED_API_KEY>
+litellm_prefix: openai
+api_base: https://evren-llmapi.ssyz.org.tr/v1
+docs_url: https://evren-llmapi.ssyz.org.tr/v1/models
+console_url: https://evren-llmapi.ssyz.org.tr/api-keys
+referral_url: https://evren-llmapi.ssyz.org.tr
+referral_note: 土耳其自营 H200 集群，单一 OpenAI 兼容端点；2026-11-01 前推理免费
+summary: 13 个模型，含 deepseek-v4.1-flash、glm-5.3、mimo-v2.6-pro、gemma-4-31b、qwen3.8-flash-next
+free_basis: >-
+  官方 Kullanım Şartları Madde 3：2026-11-01 之前所有推理模型 0.00 CR 完全免费，之后按 CR 余额计费。
+  /v1/models 每条都带 pricing.free_until 字段，过期后应重新核对。
+free_basis_checked: 2026-09-26
+max_models: 12
+limits:
+  rpm: 30
+  rpd: 20000
+  note: 官方给的是额度而不是 rpm：每 key 每天 10,000,000 token，正常限速 500k TPM，超限最多等待 60 秒不锁号；这里的 rpm/rpd 是保守估计
+discovery:
+  mode: listing
+  url: https://evren-llmapi.ssyz.org.tr/v1/models
+  auth: <REDACTED_API_KEY>
+  items_path: data
+  id_path: id
+  # 不用 whole_catalog_is_free：目录里的 13 个模型分属不同任务，embedding /
+  # rerank / ocr / asr 走的是 /v1/embeddings、/v1/rerank、/v1/ocr、/v1/audio/transcriptions，
+  # 放进 chat 池只会全部探测失败。`auto` 也不收：它是网关路由模式而不是模型。
+  # 2026-09-26 用本机 key 逐个实测，下面 7 个都能在 /v1/chat/completions 上正常回答。
+  allow:
+    - "deepseek-v4.1-flash"
+    - "deepseek-v4-flash"
+    - "glm-5.3"
+    - "gemma-4-31b"
+    - "mimo-v2.6-pro"
+    - "qwen3.8-flash-next"
+    - "qwen3-vl-30b"
+  deny:
+    - "*embed*"
+    - "*rerank*"
+    - "*ocr*"
+    - "*asr*"
+    - "*guard*"
+    - "auto"
+# 2026-09-27 移除了 provider 级 `extra_params.max_tokens: <REDACTED_API_KEY>
+# 4096）。原因：那只是「客户端没传 max_tokens 时」的默认值，而客户端自己传的值一直
+# 优先级更高、照常生效——所以 opencode / hermes 这类显式传 max_tokens 的客户端根本
+# 没被它限制过，去掉不影响它们的实际输出上限。
+#
+# 代价（知道就好，需要时再加回来）：deepseek / qwen 系推理模型的 max_tokens 是
+# 「思考 + 最终回答」的共享预算，官方要求 >= 2048（建议 4096）。**不传 max_tokens
+# 的客户端**现在会落到 EVREN 网关自己的默认值上；若那个默认值偏小，会出现「回答被
+# 思考过程吃光」、content 为空。真出现这种空回答，就把下面两行加回来。
+# probe 不受影响：probe.max_tokens 默认 16 足够判断「能不能应答」。
+probe:
+  max_per_cycle: 7

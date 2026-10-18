@@ -1,0 +1,14 @@
+# Manual corrections to the usability gate (freerouter/policy.py). Normally empty:
+# context comes from provider catalogs, the OpenRouter reference catalog and real
+# traffic; tool support from the probe. Add an entry only when those are wrong,
+# and always say why.
+#
+# Key: "provider::model_id" (one deployment) or a canonical alias (every provider).
+#   context: N     declared input window in tokens
+#   tools: bool    tool calling works / does not
+#   keep: true     force usable (e.g. a deliberately wanted small model) -- needs why
+#   keep: false    force out
+#
+# Example:
+#   groq::openai/gpt-oss-20b: {context: 8000, why: "free-tier TPM cap 8k per request"}
+overrides: {}
